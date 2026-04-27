@@ -233,6 +233,29 @@
   animation: float-soft 4s ease-in-out infinite;
 }
 
+/* Shake animation for wrong answers */
+@keyframes shake-horizontal {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+.animate-shake {
+  animation: shake-horizontal 0.4s ease-in-out;
+}
+
 /* Dashed connector path between game cards */
 .dashed-connector {
   background-image: linear-gradient(
