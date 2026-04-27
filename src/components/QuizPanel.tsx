@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { getQuiz } from "@/data/quizzes";
 import type { GameId } from "@/data/topics";
 import { useProgress } from "@/hooks/useProgress";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import confetti from "canvas-confetti";
 
 interface QuizPanelProps {
@@ -153,8 +153,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
         </div>
         <div className="mt-auto pt-6">
           <Link
-           to="/topic/$topicId"
-           params={{ topicId: "states-of-matter" }}
+           href="/topic/states-of-matter"
             className="btn-pop block rounded-full bg-primary px-6 py-3 text-center font-extrabold text-primary-foreground"
           >
             {t.backToTopicBtn}
