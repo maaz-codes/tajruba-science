@@ -21,12 +21,16 @@ export default function Landing() {
   return (
     <main className="min-h-screen bg-background px-4 pt-12 pb-16 md:px-12">
       {/* Top bar */}
-      <header className="relative mx-auto flex h-20 max-w-7xl items-center justify-between gap-6">
-        <SoundToggle variant="icon" />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <header className="mx-auto grid h-20 max-w-7xl grid-cols-3 items-center gap-6">
+        <div className="flex justify-start">
+          <SoundToggle variant="icon" />
+        </div>
+        <div className="flex justify-center">
           <Wordmark />
         </div>
-        <LanguageSwitcher compact />
+        <div className="flex justify-end">
+          <LanguageSwitcher compact />
+        </div>
       </header>
 
       {/* Hero */}
@@ -72,7 +76,7 @@ export default function Landing() {
       </section>
 
       {/* Topic cards */}
-      <section className="mx-auto mt-20 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3 lg:mt-24">
+      <section className="mx-auto mt-28 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3 lg:mt-32">
         {/* Active: States of Matter */}
         <Link
           href="/topic/states-of-matter"
