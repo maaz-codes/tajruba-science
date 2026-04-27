@@ -12,18 +12,20 @@ import topicComingFlag from "./topic-coming-flag.png";
 import topicComingSoon from "./topic-coming-soon.png";
 import topicStatesCover from "./topic-states-cover.png";
 
+const toSrc = (img: any) => (typeof img === "string" ? img : img?.src || "");
+
 export const CHARACTER_IMAGES: Record<string, string> = {
-  "cat-explorer": catExplorer,
-  "droplet-and-plant": dropletAndPlant,
-  "explorer-running": explorerRunning,
-  "gas-cloud": gasCloud,
-  "liquid-droplet": liquidDroplet,
-  "magnifier-bird": magnifierBird,
-  "owl-with-mosque": owlWithMosque,
-  "panda-scientist": pandaScientist,
-  "panda-with-tray": pandaWithTray,
-  "solid-cube": solidCube,
-  "topic-coming-flag": topicComingFlag,
-  "topic-coming-soon": topicComingSoon,
-  "topic-states-cover": topicStatesCover,
+  "cat-explorer": toSrc(catExplorer),
+  "droplet-and-plant": toSrc(dropletAndPlant),
+  "explorer-running": toSrc(explorerRunning),
+  "gas-cloud": toSrc(gasCloud),
+  "liquid-droplet": toSrc(liquidDroplet),
+  "magnifier-bird": toSrc(magnifierBird),
+  "owl-with-mosque": toSrc(owlWithMosque),
+  "panda-scientist": toSrc(pandaScientist),
+  "panda-with-tray": toSrc(pandaWithTray),
+  "solid-cube": toSrc(solidCube),
+  "topic-coming-flag": toSrc(topicComingFlag),
+  "topic-coming-soon": toSrc(topicComingSoon),
+  "topic-states-cover": toSrc(topicStatesCover),
 };

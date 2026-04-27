@@ -9,7 +9,7 @@
   ],
   "compilerOptions": {
     "target": "ES2022",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "module": "ESNext",
     "lib": [
       "ES2022",
