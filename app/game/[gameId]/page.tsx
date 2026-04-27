@@ -35,7 +35,7 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
   const isMatter = gameId === "make-your-own-matter";
 
   return (
-    <main className="min-h-screen bg-background px-3 py-4 md:px-6">
+    <main className="min-h-screen bg-background px-3 pt-12 pb-4 md:px-12">
       {/* Top bar */}
       <header className="mx-auto flex max-w-[1400px] items-center justify-between gap-3">
         <div className="flex items-center gap-3">

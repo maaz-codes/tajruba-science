@@ -33,7 +33,7 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
   const gameMeta = (id: keyof typeof t.games) => t.games[id];
 
   return (
-    <main className="min-h-screen bg-background px-4 py-6 md:px-8">
+    <main className="min-h-screen bg-background px-4 pt-12 pb-6 md:px-12">
       <header className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <Link
           href="/"

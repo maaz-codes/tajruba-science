@@ -19,9 +19,9 @@ export default function Landing() {
   const statesMax = getTopicMaxStars("states-of-matter");
 
   return (
-    <main className="min-h-screen bg-background px-4 py-6 md:px-10">
+    <main className="min-h-screen bg-background px-4 pt-12 pb-16 md:px-12">
       {/* Top bar */}
-      <header className="relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-4">
+      <header className="relative mx-auto flex h-20 max-w-7xl items-center justify-between gap-6">
         <SoundToggle variant="icon" />
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <Wordmark />
@@ -30,7 +30,7 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="relative mx-auto mt-6 flex max-w-7xl items-center justify-center">
+      <section className="relative mx-auto mt-12 flex max-w-7xl items-center justify-center lg:mt-20">
         {/* Left mascot */}
         <div className="absolute left-0 top-6 hidden md:block">
           <CharacterSlot
@@ -72,7 +72,7 @@ export default function Landing() {
       </section>
 
       {/* Topic cards */}
-      <section className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-3">
+      <section className="mx-auto mt-20 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3 lg:mt-24">
         {/* Active: States of Matter */}
         <Link
           href="/topic/states-of-matter"
