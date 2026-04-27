@@ -3,7 +3,7 @@ export type Lang = "en" | "ar";
 export const STRINGS = {
   en: {
     brandTagline: "Science",
-    heroTitle: "Let's explore, experiment & discover!",
+    heroTitle: "Let's explore, experiment\n& discover!",
     heroSubtitle: "Tajruba Science is your place to play, learn and do awesome science.",
     letsGo: "Let's go!",
     comingSoon: "Coming Soon",
@@ -18,7 +18,7 @@ export const STRINGS = {
 
     // Topic page
     statesOfMatterTitle: "States of Matter",
-    statesOfMatterIntro1: "Everything around us is made of tiny bits.",
+    statesOfMatterIntro1: "Everything around us is made of tiny particles.",
     statesOfMatterIntro2: "They can be solid, liquid, or gas!",
     solid: "Solid",
     liquid: "Liquid",

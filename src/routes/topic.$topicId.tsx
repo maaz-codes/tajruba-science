@@ -93,14 +93,14 @@ function TopicPage() {
 
       {/* Concept characters */}
       <section className="mx-auto mt-8 flex max-w-6xl items-end justify-center gap-6 md:gap-12">
-        <ConceptChar id="solid-cube" blob="bg-sky-soft" emoji="🧊" label={t.solid} />
-        <ConceptChar id="liquid-droplet" blob="bg-teal-soft" emoji="💧" label={t.liquid} />
-        <ConceptChar id="gas-cloud" blob="bg-lilac-soft" emoji="☁️" label={t.gas} />
+        <ConceptChar id="solid-cube" blob="bg-transparent" emoji="🧊" label={t.solid} />
+        <ConceptChar id="liquid-droplet" blob="bg-transparent" emoji="💧" label={t.liquid} />
+        <ConceptChar id="gas-cloud" blob="bg-transparent" emoji="☁️" label={t.gas} />
         <div className="hidden items-end gap-2 md:flex">
           <SpeechBubble variant="yellow" tail="right" className="mb-6 max-w-[180px]">
             {t.letsExploreMatter}
           </SpeechBubble>
-          <CharacterSlot id="cat-explorer" blobClass="bg-transparent" className="h-24 w-24" float>
+          <CharacterSlot id="cat-explorer" blobClass="bg-transparent" className="h-40 w-40 [&_img]:scale-[2]" float>
             <span className="text-5xl">🐱</span>
           </CharacterSlot>
         </div>
@@ -136,8 +136,8 @@ function TopicPage() {
                   </span>
                 )}
 
-                <div className={cn("flex h-36 items-center justify-center rounded-2xl", g.bgClass)}>
-                  <CharacterSlot id={g.characterSlot} blobClass="bg-transparent" className="h-28 w-28">
+                <div className={cn("flex h-36 items-center justify-center rounded-2xl overflow-hidden", g.bgClass)}>
+                  <CharacterSlot id={g.characterSlot} blobClass="bg-transparent" className="h-full w-full !rounded-2xl">
                     <span className="text-6xl">{cardEmoji(g.id)}</span>
                   </CharacterSlot>
                 </div>
@@ -174,7 +174,7 @@ function ConceptChar({
 }) {
   return (
     <div className="flex flex-col items-center">
-      <CharacterSlot id={id} blobClass={blob} className="h-28 w-28" float>
+      <CharacterSlot id={id} blobClass={blob} className="h-28 w-28 [&_img]:scale-125" float>
         <span className="text-6xl">{emoji}</span>
       </CharacterSlot>
       <span className="mt-2 text-lg font-extrabold text-navy">{label}</span>

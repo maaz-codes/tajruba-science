@@ -26,6 +26,8 @@ interface CharacterSlotProps {
  *   droplet-and-plant, explorer-running, owl-with-mosque,
  *   gas-particle, liquid-particle, solid-particle, hint-cat
  */
+import { CHARACTER_IMAGES } from "@/assets/characters";
+
 export function CharacterSlot({
   id,
   label,
@@ -34,6 +36,8 @@ export function CharacterSlot({
   float = false,
   children,
 }: CharacterSlotProps) {
+  const characterImage = CHARACTER_IMAGES[id];
+
   return (
     <div
       data-character-slot={id}
@@ -45,8 +49,14 @@ export function CharacterSlot({
       )}
       title={`Character slot: ${id}`}
     >
-      <div className="flex flex-col items-center justify-center text-center text-navy/70">
-        {children ?? (
+      <div className="flex flex-col items-center justify-center text-center text-navy/70 w-full h-full rounded-[inherit]">
+        {characterImage ? (
+          <img 
+            src={characterImage} 
+            alt={label || id} 
+            className="h-full w-full object-cover"
+          />
+        ) : children ?? (
           <>
             <span className="text-2xl">✨</span>
             {label && <span className="mt-1 px-2 text-[10px] font-bold uppercase tracking-wide">

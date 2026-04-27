@@ -39,9 +39,11 @@ function Landing() {
   return (
     <main className="min-h-screen bg-background px-4 py-6 md:px-10">
       {/* Top bar */}
-      <header className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <header className="relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-4">
         <SoundToggle variant="icon" />
-        <Wordmark />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <Wordmark />
+        </div>
         <LanguageSwitcher compact />
       </header>
 
@@ -51,21 +53,18 @@ function Landing() {
         <div className="absolute left-0 top-6 hidden md:block">
           <CharacterSlot
             id="panda-scientist"
-            blobClass="bg-pink-soft"
-            className="h-44 w-44"
+            blobClass="bg-transparent"
+            className="h-80 w-80"
             float
             label="Panda"
-          >
-            <span className="text-5xl">🐼</span>
-            <span className="-mt-2 text-3xl">⚗️</span>
-          </CharacterSlot>
+          />
         </div>
         {/* Right mascot */}
         <div className="absolute right-0 top-10 hidden md:block">
           <CharacterSlot
             id="magnifier-bird"
-            blobClass="bg-mint-soft"
-            className="h-40 w-40"
+            blobClass="bg-transparent"
+            className="h-80 w-80"
             float
             label="Bird"
           >
@@ -75,7 +74,7 @@ function Landing() {
         </div>
 
         <div className="z-10 flex max-w-3xl flex-col items-center text-center">
-          <h2 className="text-4xl font-extrabold leading-tight text-navy md:text-5xl lg:text-6xl">
+          <h2 className="whitespace-pre-line text-4xl font-extrabold leading-tight text-navy md:text-5xl lg:text-6xl">
             {t.heroTitle}
           </h2>
           <p className="mt-4 max-w-xl text-base font-bold text-navy/70 md:text-lg">
@@ -99,11 +98,11 @@ function Landing() {
           params={{ topicId: "states-of-matter" }}
           className="group relative block overflow-hidden rounded-3xl bg-card ring-4 ring-sky shadow-card transition-transform hover:-translate-y-1"
         >
-          <div className="relative flex h-44 items-end justify-center bg-sky-soft p-4">
+          <div className="relative flex h-44 items-end justify-center bg-white p-4">
             <CharacterSlot
               id="topic-states-cover"
               blobClass="bg-transparent"
-              className="absolute inset-0 m-4"
+              className="absolute inset-0 m-4 !rounded-xl overflow-hidden"
               label="States of Matter"
             >
               <div className="flex items-end gap-2 text-5xl">
@@ -139,15 +138,6 @@ function Landing() {
         />
       </section>
 
-      {/* Cat speech bubble */}
-      <section className="mx-auto mt-10 flex max-w-6xl items-end justify-center gap-3 pb-8">
-        <CharacterSlot id="cat-celebrating" blobClass="bg-transparent" className="h-20 w-20">
-          <span className="text-5xl">🐱</span>
-        </CharacterSlot>
-        <SpeechBubble variant="lilac" tail="left" className="mb-3">
-          {t.soManyTopics}
-        </SpeechBubble>
-      </section>
     </main>
   );
 }
@@ -155,8 +145,8 @@ function Landing() {
 function ComingSoonCard({ id, blob, icon, label }: { id: string; blob: string; icon: string; label: string }) {
   return (
     <div className="block overflow-hidden rounded-3xl bg-card/60 opacity-80 shadow-card">
-      <div className={`flex h-44 items-center justify-center ${blob}`}>
-        <CharacterSlot id={id} blobClass="bg-transparent" className="h-32 w-32">
+      <div className="relative flex h-44 items-center justify-center bg-white p-4">
+        <CharacterSlot id={id} blobClass="bg-transparent" className="absolute inset-0 m-4 !rounded-xl overflow-hidden">
           <span className="text-6xl">{icon}</span>
         </CharacterSlot>
       </div>
