@@ -5,7 +5,6 @@ import {
   CUBE, CHARACTER, SLIDER, OUTPUT, TRAY,
   OP_PLUS, OP_EQUAL,
   PARTICLE_RADIUS,
-  PARTICLE_COLOR,
 } from "../config";
 import { playSynth } from "../sounds";
 import {
@@ -18,6 +17,13 @@ import {
   slotScale,
   S,
 } from "../data/gameData";
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+// Scale image to fit within maxW×maxH while preserving aspect ratio.
+function fitInBox(img: Phaser.GameObjects.Image, maxW: number, maxH: number) {
+  const scale = Math.min(maxW / img.width, maxH / img.height);
+  img.setScale(scale);
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Particle {
@@ -47,6 +53,7 @@ export class GameScene extends Phaser.Scene {
   private outputImage!: Phaser.GameObjects.Image;
   private outputLabel!: Phaser.GameObjects.Text;
   private muteBtn!: Phaser.GameObjects.Text;
+  private stateImage!: Phaser.GameObjects.Image;
 
   // Slider display
   private sliderItemImages: Phaser.GameObjects.Image[] = [];
@@ -54,10 +61,7 @@ export class GameScene extends Phaser.Scene {
   private sliderDragStartY = -1;
   private sliderDragActive = false;
 
-  // Character animation
-  private charDots: Phaser.GameObjects.Arc[] = [];
-  private charEyes: Phaser.GameObjects.Arc[] = [];
-  private blinkTimer = 0;
+  // (character is now image-only, no dot/eye animation)
 
   // Drag
   private dragParticle: Particle | null = null;
@@ -88,23 +92,15 @@ export class GameScene extends Phaser.Scene {
     this.updateState();
   }
 
-  update(_time: number, delta: number) {
-    this.animateCharacter(delta);
+  update(_time: number, _delta: number) {
+    // reserved for future per-frame updates
   }
 
   // ── Background ─────────────────────────────────────────────────────────────
   private drawBackground() {
-    const bg = this.add.graphics();
-    bg.fillStyle(0xeef2ff, 1);
-    bg.fillRect(0, 0, GAME_W, GAME_H);
-
-    // Subtle grid dots
-    bg.fillStyle(0xc7d2fe, 0.4);
-    for (let x = 40; x < GAME_W; x += 60) {
-      for (let y = 40; y < GAME_H; y += 60) {
-        bg.fillCircle(x, y, 2);
-      }
-    }
+    this.add.image(GAME_W / 2, GAME_H / 2, KEYS.BG)
+      .setDisplaySize(GAME_W, GAME_H)
+      .setDepth(-10);
   }
 
   // ── Panels ────────────────────────────────────────────────────────────────
@@ -161,36 +157,25 @@ export class GameScene extends Phaser.Scene {
 
   // ── Discovery badges ───────────────────────────────────────────────────────
   private buildBadges() {
+    const badgeKeys = [KEYS.BADGE_GAS, KEYS.BADGE_LIQUID, KEYS.BADGE_SOLID];
     const labels = ["Gas", "Liquid", "Solid"];
-    const colors = [0x80deea, 0x5b9cf6, 0x8b6c4f];
     const startX = GAME_W - 260;
 
     for (let i = 0; i < 3; i++) {
       const x = startX + i * 88;
       const y = 55;
 
-      const g = this.add.graphics();
-      g.fillStyle(colors[i], 0.15);
-      g.fillRoundedRect(x - 36, y - 36, 72, 72, 14);
-      g.lineStyle(2, colors[i], 0.3);
-      g.strokeRoundedRect(x - 36, y - 36, 72, 72, 14);
+      const img = this.add.image(x, y - 8, badgeKeys[i])
+        .setAlpha(0.3); // dim until discovered
+      fitInBox(img, 70, 70);
 
-      // Icon placeholder
-      const icon = this.add.graphics();
-      icon.fillStyle(colors[i], 0.4);
-      for (let d = 0; d < 3 + i * 2; d++) {
-        const px = Phaser.Math.Between(-18, 18);
-        const py = Phaser.Math.Between(-14, 8);
-        icon.fillCircle(x + px, y - 8 + py, 5 - i);
-      }
-
-      this.add.text(x, y + 22, labels[i], {
+      this.add.text(x, y + 26, labels[i], {
         fontSize: "12px",
         fontStyle: "bold",
-        color: "#" + colors[i].toString(16).padStart(6, "0"),
-      }).setOrigin(0.5).setAlpha(0.5);
+        color: "#6366f1",
+      }).setOrigin(0.5).setAlpha(0.4);
 
-      this.badgeImages.push(icon as unknown as Phaser.GameObjects.Image);
+      this.badgeImages.push(img);
     }
   }
 
@@ -209,7 +194,7 @@ export class GameScene extends Phaser.Scene {
 
   // ── Helper bubble ──────────────────────────────────────────────────────────
   private buildHelperBubble() {
-    const bx = 140, by = 560;
+    const bx = 350, by = 530;
 
     const bg = this.add.graphics();
     bg.fillStyle(0xfef9c3, 1);
@@ -223,48 +208,23 @@ export class GameScene extends Phaser.Scene {
       color: "#854d0e",
     }).setOrigin(0.5);
 
-    // Small character alongside bubble
-    this.add.text(bx - 100, by + 10, "🦉", { fontSize: "36px" }).setOrigin(0.5);
   }
 
   // ── Matter character ───────────────────────────────────────────────────────
   private buildCharacter() {
     const cx = CHARACTER.x, cy = CHARACTER.y;
 
-    // Neutral face
-    const face = this.add.graphics();
-    face.fillStyle(0xdbeafe, 1);
-    face.fillRoundedRect(cx - 60, cy - 70, 120, 100, 20);
+    // State image fills the character panel — fades in/out on state change
+    this.stateImage = this.add.image(cx, cy, KEYS.STATE_GAS)
+      .setAlpha(0); // hidden until a state is active
+    fitInBox(this.stateImage, CHARACTER.w - 24, CHARACTER.h - 24);
 
-    // Eyes (we'll blink these)
-    const eyeL = this.add.arc(cx - 20, cy - 30, 8, 0, 360, false, 0x1e3a5f);
-    const eyeR = this.add.arc(cx + 20, cy - 30, 8, 0, 360, false, 0x1e3a5f);
-    this.charEyes.push(eyeL, eyeR);
-
-    // Smile
-    const smile = this.add.graphics();
-    smile.lineStyle(3, 0x1e3a5f, 1);
-    smile.beginPath();
-    smile.arc(cx, cy - 10, 18, 0, Math.PI, false);
-    smile.strokePath();
-
-    // Particle body (dots below face — animated later)
-    this.buildCharDots();
-
-    // State label inside character box
-    this.stateLabelText = this.add.text(cx, cy + 75, "", {
+    // State label below image
+    this.stateLabelText = this.add.text(cx, cy + CHARACTER.h / 2 - 18, "", {
       fontSize: "16px",
       fontStyle: "bold",
       color: "#6366f1",
     }).setOrigin(0.5);
-  }
-
-  private buildCharDots() {
-    const cx = CHARACTER.x, cy = CHARACTER.y;
-    for (let i = 0; i < 12; i++) {
-      const dot = this.add.arc(cx, cy + 30, 5, 0, 360, false, PARTICLE_COLOR, 0.3);
-      this.charDots.push(dot);
-    }
   }
 
   // ── Slider ─────────────────────────────────────────────────────────────────
@@ -279,7 +239,7 @@ export class GameScene extends Phaser.Scene {
     for (let i = 0; i < SLIDER_ITEMS.length; i++) {
       const iy = startY + i * (SLIDER_ITEM_SIZE + SLIDER_GAP);
       const img = this.add.image(sx, iy, ICON_KEYS[i]);
-      img.setDisplaySize(SLIDER_ITEM_SIZE, SLIDER_ITEM_SIZE);
+      fitInBox(img, SLIDER_ITEM_SIZE, SLIDER_ITEM_SIZE);
       img.setInteractive({ cursor: "pointer" });
 
       // Click to select
@@ -357,7 +317,7 @@ export class GameScene extends Phaser.Scene {
     const ox = OUTPUT.x, oy = OUTPUT.y;
 
     this.outputImage = this.add.image(ox, oy - 20, KEYS.OUT_NEUTRAL);
-    this.outputImage.setDisplaySize(110, 110);
+    fitInBox(this.outputImage, OUTPUT.w - 24, OUTPUT.h - 50);
 
     this.outputLabel = this.add.text(ox, oy + 60, "", {
       fontSize: "17px",
@@ -511,6 +471,23 @@ export class GameScene extends Phaser.Scene {
     };
     this.stateLabelText.setText(labels[state]);
 
+    // Swap state image
+    const stateKeys: Record<MatterState, string | null> = {
+      empty: null,
+      gas: KEYS.STATE_GAS,
+      liquid: KEYS.STATE_LIQUID,
+      solid: KEYS.STATE_SOLID,
+    };
+    const key = stateKeys[state];
+    if (key) {
+      this.stateImage.setTexture(key);
+      fitInBox(this.stateImage, CHARACTER.w - 24, CHARACTER.h - 24);
+      this.stateImage.setAlpha(0);
+      this.tweens.add({ targets: this.stateImage, alpha: 1, duration: 250, ease: "Quad.easeIn" });
+    } else {
+      this.tweens.add({ targets: this.stateImage, alpha: 0, duration: 150 });
+    }
+
     // Pop animation on label
     this.tweens.add({
       targets: this.stateLabelText,
@@ -538,15 +515,17 @@ export class GameScene extends Phaser.Scene {
     const idx = BADGE_STATES.indexOf(state);
     if (idx === -1) return;
     const badge = this.badgeImages[idx];
+    const baseScale = badge.scaleX; // preserve display size scale
     this.tweens.add({
       targets: badge,
       alpha: 1,
-      scaleX: 1.2,
-      scaleY: 1.2,
-      duration: 300,
-      yoyo: true,
+      scaleX: baseScale * 1.25,
+      scaleY: baseScale * 1.25,
+      duration: 200,
       ease: "Back.easeOut",
-      onComplete: () => badge.setAlpha(1),
+      yoyo: true,
+      hold: 80,
+      onComplete: () => { badge.setAlpha(1); badge.setScale(baseScale); },
     });
   }
 
@@ -585,13 +564,15 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.outputImage.setTexture(textureKey);
+    fitInBox(this.outputImage, OUTPUT.w - 24, OUTPUT.h - 50);
     this.outputLabel.setText(label);
 
-    // Bounce pop
+    // Bounce pop — relative to the display scale just set
+    const baseScale = this.outputImage.scaleX;
     this.tweens.add({
       targets: [this.outputImage, this.outputLabel],
-      scaleX: 1.15,
-      scaleY: 1.15,
+      scaleX: baseScale * 1.15,
+      scaleY: baseScale * 1.15,
       duration: 100,
       yoyo: true,
       ease: "Back.easeOut",
@@ -610,38 +591,5 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  // ── Character animation ───────────────────────────────────────────────────
-  private animateCharacter(delta: number) {
-    const state = this.currentState;
-    const t = this.time.now / 1000;
-
-    // Dot behavior per state
-    const configs: Record<MatterState, { count: number; spread: number; speed: number; alpha: number }> = {
-      empty: { count: 0, spread: 0, speed: 0, alpha: 0 },
-      gas: { count: 5, spread: 55, speed: 1.8, alpha: 0.45 },
-      liquid: { count: 9, spread: 35, speed: 0.6, alpha: 0.75 },
-      solid: { count: 12, spread: 18, speed: 0.1, alpha: 1 },
-    };
-    const cfg = configs[state];
-
-    this.charDots.forEach((dot, i) => {
-      const visible = i < cfg.count;
-      dot.setVisible(visible);
-      if (!visible) return;
-
-      const baseAngle = (i / cfg.count) * Math.PI * 2;
-      const wobble = cfg.speed * Math.sin(t * 2 + i * 0.8);
-      const r = cfg.spread * (0.7 + 0.3 * Math.sin(t * 1.2 + i));
-      dot.x = CHARACTER.x + Math.cos(baseAngle + wobble) * r;
-      dot.y = CHARACTER.y + 30 + Math.sin(baseAngle + wobble) * r * 0.5;
-      dot.setAlpha(cfg.alpha);
-    });
-
-    // Blink
-    this.blinkTimer += delta;
-    const eyeOpen = (this.blinkTimer % 3500) > 200;
-    this.charEyes.forEach((e) => e.setAlpha(eyeOpen ? 1 : 0));
-    if (this.blinkTimer > 3500) this.blinkTimer = 0;
-  }
 
 }
