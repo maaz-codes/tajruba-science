@@ -111,8 +111,8 @@ HELPER BUBBLE:
 - Show lightweight exploration prompts only, not formal tasks or levels.
 - Prompt options are:
   - “Make gas”
-  - “Make liquid”
-  - “Make solid”
+  - “Drag more to make liquid”
+  - “Drag more to make solid”
 - The bubble should always ask for one currently unexplored state.
 - For deterministic behavior, you may choose the first unseen state in the order gas -> liquid -> solid.
 - Once all three states are discovered, change the bubble text to:
