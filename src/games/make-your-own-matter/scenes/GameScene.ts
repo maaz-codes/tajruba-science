@@ -51,6 +51,8 @@ export class GameScene extends Phaser.Scene {
   private stateLabelText!: Phaser.GameObjects.Text;
   private helperBubbleText!: Phaser.GameObjects.Text;
   private badgeImages: Phaser.GameObjects.Image[] = [];
+  private badgeGlows: Phaser.GameObjects.Graphics[] = [];
+  private badgePositions: { x: number; y: number }[] = [];
   private outputImage!: Phaser.GameObjects.Image;
   private outputLabel!: Phaser.GameObjects.Text;
   private muteBtn!: Phaser.GameObjects.Text;
@@ -156,17 +158,25 @@ export class GameScene extends Phaser.Scene {
   private buildBadges() {
     const badgeKeys = [KEYS.BADGE_GAS, KEYS.BADGE_LIQUID, KEYS.BADGE_SOLID];
     const labels = ["Gas", "Liquid", "Solid"];
+    const glowColors = [0x86efac, 0x67e8f9, 0xc4b5fd]; // green / cyan / violet per state
     const startX = GAME_W - 260;
 
     for (let i = 0; i < 3; i++) {
       const x = startX + i * 88;
       const y = 72;
 
+      // Glow circle behind badge — hidden until discovered
+      const glow = this.add.graphics().setAlpha(0).setDepth(0);
+      glow.fillStyle(glowColors[i], 0.35);
+      glow.fillCircle(x, y - 8, 42);
+      this.badgeGlows.push(glow);
+      this.badgePositions.push({ x, y: y - 8 });
+
       const img = this.add.image(x, y - 8, badgeKeys[i])
-        .setAlpha(0.3); // dim until discovered
+        .setAlpha(0.4).setDepth(1);
       fitInBox(img, 70, 70);
 
-      this.add.text(x, y + 26, labels[i], {
+      this.add.text(x, y + 20, labels[i], {
         fontFamily: FONT, fontSize: "12px", fontStyle: "bold",
         color: COLOR.PRIMARY,
       }).setOrigin(0.5).setAlpha(0.4);
@@ -540,18 +550,71 @@ export class GameScene extends Phaser.Scene {
     const idx = BADGE_STATES.indexOf(state);
     if (idx === -1) return;
     const badge = this.badgeImages[idx];
-    const baseScale = badge.scaleX; // preserve display size scale
+    const glow = this.badgeGlows[idx];
+    const { x, y } = this.badgePositions[idx];
+    const baseScale = badge.scaleX;
+
+    // 1. Fade in glow behind badge
+    this.tweens.add({ targets: glow, alpha: 1, duration: 400, ease: "Quad.easeOut" });
+
+    // 2. Spring pop — scale up then spring back past 1.0 and settle
+    badge.setAlpha(1);
     this.tweens.add({
       targets: badge,
-      alpha: 1,
-      scaleX: baseScale * 1.25,
-      scaleY: baseScale * 1.25,
-      duration: 200,
+      scaleX: baseScale * 1.5,
+      scaleY: baseScale * 1.5,
+      duration: 180,
       ease: "Back.easeOut",
-      yoyo: true,
-      hold: 80,
-      onComplete: () => { badge.setAlpha(1); badge.setScale(baseScale); },
+      onComplete: () => {
+        this.tweens.add({
+          targets: badge,
+          scaleX: baseScale,
+          scaleY: baseScale,
+          duration: 400,
+          ease: "Back.easeOut",
+        });
+      },
     });
+
+    // 3. Ring burst — expanding circle outline that fades out
+    const ring = this.add.graphics().setDepth(5);
+    const ringColor = [0x86efac, 0x67e8f9, 0xc4b5fd][idx];
+    let radius = 38;
+    const ringTween = { value: 0 };
+    this.tweens.add({
+      targets: ringTween,
+      value: 1,
+      duration: 600,
+      ease: "Quad.easeOut",
+      onUpdate: () => {
+        const r = 38 + ringTween.value * 36;
+        const alpha = 1 - ringTween.value;
+        ring.clear();
+        ring.lineStyle(3, ringColor, alpha);
+        ring.strokeCircle(x, y, r);
+      },
+      onComplete: () => ring.destroy(),
+    });
+
+    // 4. Sparkle orbit around badge
+    const sparkColors = [0xfde047, 0xffffff, 0xfcd34d];
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const dist = Phaser.Math.Between(44, 68);
+      const color = sparkColors[i % sparkColors.length];
+      const dot = this.add.arc(x, y, 4, 0, 360, false, color).setDepth(20);
+      this.tweens.add({
+        targets: dot,
+        x: x + Math.cos(angle) * dist,
+        y: y + Math.sin(angle) * dist,
+        alpha: 0,
+        scaleX: 0.2,
+        scaleY: 0.2,
+        duration: 550,
+        ease: "Quad.easeOut",
+        onComplete: () => dot.destroy(),
+      });
+    }
   }
 
   private spawnSparkles(x: number, y: number) {
