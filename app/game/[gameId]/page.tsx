@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useRef } from "react";
+import { use, useRef, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FlaskConical, Home } from "lucide-react";
@@ -96,26 +96,46 @@ const GAME_PREVIEWS: Record<GameId, string | null> = {
  */
 function PhaserGameContainer({ gameId }: { gameId: GameId }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const preview = GAME_PREVIEWS[gameId];
+
+  useEffect(() => {
+    if (gameId !== "make-your-own-matter" || !containerRef.current) return;
+
+    let cancelled = false;
+    let cleanup: (() => void) | null = null;
+
+    import("@/games/make-your-own-matter").then(({ mount, unmount }) => {
+      if (cancelled || !containerRef.current) return;
+      mount(containerRef.current);
+      cleanup = unmount;
+    });
+
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, [gameId]);
+
+  // Non-playable games fall back to preview image or coming-soon
+  if (gameId !== "make-your-own-matter") {
+    const preview = GAME_PREVIEWS[gameId];
+    return (
+      <div className="mt-4 min-h-[420px] w-full overflow-hidden rounded-2xl bg-card/70">
+        {preview ? (
+          <img src={preview} alt="Game preview" className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex min-h-[420px] items-center justify-center">
+            <p className="text-sm font-bold text-navy/50">Game coming soon</p>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
       ref={containerRef}
       id={`phaser-game-${gameId}`}
       className="mt-4 min-h-[420px] w-full overflow-hidden rounded-2xl bg-card/70"
-    >
-      {preview ? (
-        // Preview image — replace with Phaser canvas once the scene is wired up
-        <img
-          src={preview}
-          alt="Game preview"
-          className="h-full w-full object-cover"
-        />
-      ) : (
-        <div className="flex min-h-[420px] items-center justify-center">
-          <p className="text-sm font-bold text-navy/50">Game coming soon</p>
-        </div>
-      )}
-    </div>
+    />
   );
 }
