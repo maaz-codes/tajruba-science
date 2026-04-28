@@ -3,7 +3,10 @@ import { GAME_W, GAME_H } from "./config";
 
 let gameInstance: Phaser.Game | null = null;
 
-export async function mount(container: HTMLElement): Promise<void> {
+export async function mount(
+  container: HTMLElement,
+  onProgress?: (pct: number) => void,
+): Promise<void> {
   if (gameInstance) return;
 
   // Dynamic import keeps Phaser off the server (it needs window/document).
@@ -27,6 +30,15 @@ export async function mount(container: HTMLElement): Promise<void> {
     physics: { default: "arcade", arcade: { debug: false } },
     scene: [BootScene, StartScene, GameScene],
     audio: { disableWebAudio: false },
+    callbacks: {
+      postBoot: (game) => {
+        if (!onProgress) return;
+        const scene = game.scene.getScene("BootScene") as any;
+        if (!scene?.load) return;
+        scene.load.on("progress", (value: number) => onProgress(Math.round(value * 100)));
+        scene.load.on("complete", () => onProgress(100));
+      },
+    },
   });
 }
 

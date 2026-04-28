@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
+import { RouteProgress } from "@/components/RouteProgress";
 
 export const metadata: Metadata = {
   title: "Tajruba Science — Play, learn and do awesome science",
@@ -15,8 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <LanguageProvider>
+          <RouteProgress />
           {children}
         </LanguageProvider>
       </body>
