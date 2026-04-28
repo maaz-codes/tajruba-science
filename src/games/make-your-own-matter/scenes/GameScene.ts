@@ -199,7 +199,8 @@ export class GameScene extends Phaser.Scene {
       fontSize: "15px",
       fontStyle: "bold",
       color: "#854d0e",
-    }).setOrigin(0.5);
+      align: "left",
+    }).setOrigin(0, 0.5);
 
   }
 
@@ -595,7 +596,7 @@ export class GameScene extends Phaser.Scene {
     const order: MatterState[] = ["gas", "liquid", "solid"];
     const next = order.find((s) => !this.discovered[s]);
     if (next) {
-      const map: Record<string, string> = { gas: "Make gas 💨", liquid: "Make liquid 💧", solid: "Make solid 🪨" };
+      const map: Record<string, string> = { gas: "Make gas", liquid: "Make liquid", solid: "Make solid" };
       this.helperBubbleText.setText(map[next]);
     } else {
       this.helperBubbleText.setText("Try different combinations!");
