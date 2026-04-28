@@ -2,10 +2,10 @@ import Phaser from "phaser";
 import { GAME_W, GAME_H, KEYS, FONT, COLOR } from "../config";
 import { playSynth } from "../sounds";
 
-const BTN_W = 240;
-const BTN_H = 58;
-const BTN_R = 16; // border-radius matching site's rounded-2xl
-const BTN_SHADOW = 5; // chunky bottom shadow depth (btn-pop style)
+const BTN_W = 360;
+const BTN_H = 87;
+const BTN_R = 44; // fully circular ends (= BTN_H / 2)
+const BTN_SHADOW = 6;
 
 export class StartScene extends Phaser.Scene {
   constructor() {
@@ -13,38 +13,29 @@ export class StartScene extends Phaser.Scene {
   }
 
   create() {
-    // Use game background image if available, else fallback colour
-    if (this.textures.exists(KEYS.BG)) {
-      this.add.image(GAME_W / 2, GAME_H / 2, KEYS.BG).setDisplaySize(GAME_W, GAME_H);
-    } else {
-      this.add.graphics().fillStyle(0xeef2ff, 1).fillRect(0, 0, GAME_W, GAME_H);
-    }
-
-    // Semi-transparent overlay so text pops
-    const overlay = this.add.graphics();
-    overlay.fillStyle(0xffffff, 0.55);
-    overlay.fillRoundedRect(GAME_W / 2 - 280, GAME_H / 2 - 110, 560, 220, 24);
+    // Solid background
+    this.add.graphics().fillStyle(0x9177ec, 1).fillRect(0, 0, GAME_W, GAME_H);
 
     // Title
-    this.add.text(GAME_W / 2, GAME_H / 2 - 58, "Make Your Own Matter", {
-      fontFamily: FONT, fontSize: "36px", fontStyle: "bold",
-      color: COLOR.NAVY,
+    this.add.text(GAME_W / 2, GAME_H / 2 - 72, "Make Your Own Matter", {
+      fontFamily: FONT, fontSize: "54px", fontStyle: "bold",
+      color: "#ffffff",
     }).setOrigin(0.5);
 
     // Subtitle
     this.add.text(GAME_W / 2, GAME_H / 2 - 16, "Discover the states of matter by dragging particles.", {
-      fontFamily: FONT, fontSize: "16px", fontStyle: "normal",
-      color: COLOR.TEXT_MUTED,
+      fontFamily: FONT, fontSize: "24px", fontStyle: "normal",
+      color: "#ffffff",
     }).setOrigin(0.5);
 
     // btn-pop style button
-    const bx = GAME_W / 2, by = GAME_H / 2 + 48;
+    const bx = GAME_W / 2, by = GAME_H / 2 + 100;
     const btnGfx = this.add.graphics();
     this.drawBtn(btnGfx, bx, by, false);
 
     const btnLabel = this.add.text(bx, by, "Start Experiment", {
-      fontFamily: FONT, fontSize: "20px", fontStyle: "bold",
-      color: COLOR.WHITE,
+      fontFamily: FONT, fontSize: "30px", fontStyle: "bold",
+      color: "#6b48c8",
     }).setOrigin(0.5);
 
     const zone = this.add.zone(bx, by + BTN_SHADOW / 2, BTN_W, BTN_H + BTN_SHADOW)
@@ -78,12 +69,12 @@ export class StartScene extends Phaser.Scene {
     const shadow = pressed ? 1 : BTN_SHADOW;
     const lift = pressed ? 0 : (hover ? -1 : 0);
 
-    // Shadow layer (darker shade of primary)
-    g.fillStyle(0x312e81, 1);
+    // Shadow layer
+    g.fillStyle(0xb8a0e0, 1);
     g.fillRoundedRect(x, y + shadow + lift, BTN_W, BTN_H, BTN_R);
 
     // Main button face
-    g.fillStyle(hover ? 0x4338ca : 0x4f46e5, 1);
+    g.fillStyle(hover ? 0xddd0f5 : 0xece4f7, 1);
     g.fillRoundedRect(x, y + lift, BTN_W, BTN_H, BTN_R);
   }
 }

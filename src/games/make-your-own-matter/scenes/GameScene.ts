@@ -141,13 +141,13 @@ export class GameScene extends Phaser.Scene {
 
   // ── Top bar ────────────────────────────────────────────────────────────────
   private buildTopBar() {
-    this.add.text(GAME_W / 2, 42, "Explore Matter with Particles!", {
-      fontFamily: FONT, fontSize: "28px", fontStyle: "bold",
+    this.add.text(GAME_W / 2, 72, "Explore Matter with Particles!", {
+      fontFamily: FONT, fontSize: "40px", fontStyle: "bold",
       color: COLOR.NAVY,
     }).setOrigin(0.5);
 
-    this.add.text(GAME_W / 2, 76, "Arrange the particles to match the state of matter.", {
-      fontFamily: FONT, fontSize: "16px", fontStyle: "normal",
+    this.add.text(GAME_W / 2, 76, "", {
+      fontFamily: FONT, fontSize: "28px", fontStyle: "normal",
       color: COLOR.TEXT_MUTED,
     }).setOrigin(0.5);
   }
@@ -160,7 +160,7 @@ export class GameScene extends Phaser.Scene {
 
     for (let i = 0; i < 3; i++) {
       const x = startX + i * 88;
-      const y = 55;
+      const y = 72;
 
       const img = this.add.image(x, y - 8, badgeKeys[i])
         .setAlpha(0.3); // dim until discovered
@@ -177,13 +177,13 @@ export class GameScene extends Phaser.Scene {
 
   // ── Mute button — circular, matches site's rounded-full icon buttons ─────────
   private buildMuteButton() {
-    const cx = 42, cy = 42, r = 22;
+    const cx = 72, cy = 72, r = 32;
 
     const circle = this.add.graphics();
     this.drawMuteCircle(circle, cx, cy, r, false);
 
     this.muteBtn = this.add.text(cx, cy + 1, "♪", {
-      fontFamily: FONT, fontSize: "18px", fontStyle: "bold",
+      fontFamily: FONT, fontSize: "24px", fontStyle: "bold",
       color: COLOR.WHITE,
     }).setOrigin(0.5);
 
@@ -208,14 +208,14 @@ export class GameScene extends Phaser.Scene {
 
   // ── Helper bubble ──────────────────────────────────────────────────────────
   private buildHelperBubble() {
-    const bx = 290, by = 530;
+    const bx = 413, by = 530;
 
     // Bubble background hidden — bg image has its own thought bubble
     this.helperBubbleText = this.add.text(bx, by, "Drag particles to make matter!", {
-      fontFamily: FONT, fontSize: "15px", fontStyle: "bold",
+      fontFamily: FONT, fontSize: "16px", fontStyle: "bold",
       color: COLOR.NAVY,
       align: "left",
-    }).setOrigin(0, 0.5);
+    }).setOrigin(0.5, 0.5);
 
   }
 
@@ -274,6 +274,12 @@ export class GameScene extends Phaser.Scene {
 
       this.sliderItemImages.push(img);
     }
+
+    // "toggle these" label above slider panel
+    this.add.text(sx, SLIDER.y - SLIDER.h / 2 - 14, "toggle these", {
+      fontFamily: FONT, fontSize: "20px", fontStyle: "bold",
+      color: COLOR.TEXT_MUTED,
+    }).setOrigin(0.5, 1);
 
     // Selection highlight drawn behind items
     this.sliderHighlight = this.add.graphics().setDepth(-1);
@@ -584,6 +590,10 @@ export class GameScene extends Phaser.Scene {
 
     this.outputImage.setTexture(textureKey);
     fitInBox(this.outputImage, OUTPUT.w - 24, OUTPUT.h - 50);
+    // Chemicals asset has a smaller native size so fitInBox over-scales it
+    if (textureKey === KEYS.OUT_CHEMICALS) {
+      this.outputImage.setScale(this.outputImage.scaleX * 0.72);
+    }
     this.outputLabel.setText(label);
 
     // Bounce pop — relative to the display scale just set
