@@ -19,7 +19,7 @@ export default function Landing() {
   const statesMax = getTopicMaxStars("states-of-matter");
 
   return (
-    <main className="min-h-screen bg-background px-4 pt-12 pb-16 md:px-12">
+    <main className="min-h-screen bg-background px-4 pt-2 pb-16 md:px-12">
       {/* Top bar */}
       <header className="mx-auto grid h-20 max-w-7xl grid-cols-3 items-center gap-6">
         <div className="flex justify-start">
