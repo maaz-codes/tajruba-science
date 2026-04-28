@@ -3,14 +3,14 @@
 import { use, useRef, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, FlaskConical, Home } from "lucide-react";
+import { ArrowLeft, FlaskConical, Home, Atom, Layers, Package } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SoundToggle } from "@/components/SoundToggle";
 import { StarsCounter } from "@/components/StarsCounter";
 import { QuizPanel } from "@/components/QuizPanel";
 import { useProgress } from "@/hooks/useProgress";
-import { TOPICS, type GameId } from "@/data/topics";
+import { TOPICS, GAME_SUB_TOPICS, type GameId } from "@/data/topics";
 
 const VALID_GAMES = TOPICS["states-of-matter"].games.map((g) => g.id);
 
@@ -75,11 +75,35 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
         </section>
 
         {/* Quiz panel */}
-        <QuizPanel gameId={gameId} />
+        <QuizPanel gameId={gameId} bgColor={QUIZ_BG[gameId]} />
+      </div>
+
+      {/* Sub-topics covered */}
+      <div className="mx-auto mt-4 max-w-[1400px]">
+        <p className="mb-3 text-sm font-extrabold uppercase tracking-widest text-navy/50">Sub-topics covered</p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {([<Atom size={20} />, <Layers size={20} />, <Package size={20} />] as const).map((icon, i) => ({
+              icon, text: GAME_SUB_TOPICS[gameId][i],
+            })).map(({ icon, text }, i) => (
+            <div key={i} className="flex items-center gap-3 rounded-2xl border border-lilac/40 bg-card px-4 py-3 shadow-sm">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                {icon}
+              </span>
+              <p className="text-sm font-bold leading-snug text-navy/80">{text}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
 }
+
+const QUIZ_BG: Record<GameId, string | undefined> = {
+  "make-your-own-matter": undefined,  // keeps default lilac-soft
+  "water-the-plant":  "#CEECDF",
+  "wadi-crossing":    "#FEE6BE",
+  "mosque-systems":   "#FEF3CA",
+};
 
 // Map each gameId to its preview image path (in /public). Set to null when none exists.
 const GAME_PREVIEWS: Record<GameId, string | null> = {
