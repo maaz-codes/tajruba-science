@@ -280,6 +280,15 @@ export class GameScene extends Phaser.Scene {
       const iy = startY + i * (SLIDER_ITEM_SIZE + SLIDER_GAP);
       const img = this.add.image(sx, iy, ICON_KEYS[i]);
       img.setDisplaySize(SLIDER_ITEM_SIZE, SLIDER_ITEM_SIZE);
+      img.setInteractive({ cursor: "pointer" });
+      img.on("pointerdown", () => {
+        if (this.sliderIndex !== i) {
+          this.sliderIndex = i;
+          this.refreshSliderHighlight();
+          this.playSfx(KEYS.SFX_TICK);
+          this.updateOutput();
+        }
+      });
       this.sliderItemImages.push(img);
     }
 
