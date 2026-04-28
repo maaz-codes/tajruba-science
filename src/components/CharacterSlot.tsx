@@ -1,4 +1,6 @@
+"use client";
 import type { ReactNode } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface CharacterSlotProps {
@@ -37,6 +39,15 @@ export function CharacterSlot({
   children,
 }: CharacterSlotProps) {
   const characterImage = CHARACTER_IMAGES[id];
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Cached images may already be loaded before onLoad attaches; check ref on mount
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setImgLoaded(true);
+    }
+  }, [characterImage]);
 
   return (
     <div
@@ -49,12 +60,22 @@ export function CharacterSlot({
       )}
       title={`Character slot: ${id}`}
     >
+      {/* Skeleton pulse shown until image loads */}
+      {characterImage && !imgLoaded && (
+        <div className="absolute inset-0 rounded-[inherit] animate-pulse bg-lilac/40" />
+      )}
       <div className="flex flex-col items-center justify-center text-center text-navy/70 w-full h-full rounded-[inherit]">
         {characterImage ? (
-          <img 
-            src={characterImage} 
-            alt={label || id} 
-            className="h-full w-full object-cover"
+          <img
+            ref={imgRef}
+            src={characterImage}
+            alt={label || id}
+            loading="lazy"
+            onLoad={() => setImgLoaded(true)}
+            className={cn(
+              "h-full w-full object-cover transition-opacity duration-300",
+              imgLoaded ? "opacity-100" : "opacity-0",
+            )}
           />
         ) : children ?? (
           <>
