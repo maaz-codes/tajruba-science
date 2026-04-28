@@ -54,6 +54,7 @@ export class GameScene extends Phaser.Scene {
   private outputLabel!: Phaser.GameObjects.Text;
   private muteBtn!: Phaser.GameObjects.Text;
   private stateImage!: Phaser.GameObjects.Image;
+  private cubeHintText!: Phaser.GameObjects.Text;
 
   // Slider display
   private sliderItemImages: Phaser.GameObjects.Image[] = [];
@@ -83,6 +84,7 @@ export class GameScene extends Phaser.Scene {
     this.buildMuteButton();
     this.buildHelperBubble();
     this.buildCharacter();
+    this.buildCubeHint();
     this.buildSlider();
     this.buildOutputBox();
     this.buildTray();
@@ -193,7 +195,7 @@ export class GameScene extends Phaser.Scene {
     const bx = 350, by = 530;
 
     // Bubble background hidden — bg image has its own thought bubble
-    this.helperBubbleText = this.add.text(bx, by, "Make gas", {
+    this.helperBubbleText = this.add.text(bx, by, "Drag particles to make matter!", {
       fontSize: "15px",
       fontStyle: "bold",
       color: "#854d0e",
@@ -216,6 +218,17 @@ export class GameScene extends Phaser.Scene {
       fontStyle: "bold",
       color: "#6366f1",
     }).setOrigin(0.5);
+  }
+
+  // ── Cube hint ──────────────────────────────────────────────────────────────
+  private buildCubeHint() {
+    this.cubeHintText = this.add.text(CUBE.x, CUBE.y, "Drop\nparticles\nhere", {
+      fontSize: "16px",
+      fontStyle: "bold",
+      color: "#a5b4fc",
+      align: "center",
+      lineSpacing: 4,
+    }).setOrigin(0.5).setAlpha(0.8);
   }
 
   // ── Slider ─────────────────────────────────────────────────────────────────
@@ -376,6 +389,10 @@ export class GameScene extends Phaser.Scene {
         this.cubeCount++;
         playSynth("pop", this.muted);
         this.rearrangeCube();
+        // Fade out cube hint on first drop
+        if (this.cubeCount === 1 && this.cubeHintText.alpha > 0) {
+          this.tweens.add({ targets: this.cubeHintText, alpha: 0, duration: 300 });
+        }
       } else if (!inCubeNow && wasInCube) {
         p.inCube = false;
         this.cubeCount--;
@@ -572,13 +589,16 @@ export class GameScene extends Phaser.Scene {
 
   // ── Helper bubble ─────────────────────────────────────────────────────────
   private updateHelperBubble() {
+    // Keep the intro prompt until the first particle is actually moved
+    if (this.cubeCount === 0 && Object.values(this.discovered).every(v => !v)) return;
+
     const order: MatterState[] = ["gas", "liquid", "solid"];
     const next = order.find((s) => !this.discovered[s]);
     if (next) {
-      const map: Record<string, string> = { gas: "Make gas", liquid: "Make liquid", solid: "Make solid" };
+      const map: Record<string, string> = { gas: "Make gas 💨", liquid: "Make liquid 💧", solid: "Make solid 🪨" };
       this.helperBubbleText.setText(map[next]);
     } else {
-      this.helperBubbleText.setText("Try different combinations");
+      this.helperBubbleText.setText("Try different combinations!");
     }
   }
 
