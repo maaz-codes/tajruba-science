@@ -36,7 +36,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   // New Quiz Engine States
   const [answerStates, setAnswerStates] = useState<('idle' | 'correct' | 'wrong')[]>(Array(10).fill('idle'));
   const [tryAgainVisible, setTryAgainVisible] = useState(false);
-  const [hintOpen, setHintOpen] = useState(false);
+  const [hintOpen, setHintOpen] = useState(true);
 
   // Refs for tracking without re-rendering
   const hasAnsweredCurrentRef = useRef(false);
@@ -116,7 +116,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
           // Advance to next question
           setIndex(index + 1);
           setAnswerStates(Array(10).fill('idle'));
-          setHintOpen(false);
+          // hint visibility intentionally preserved across questions
           setTryAgainVisible(false);
           hasAnsweredCurrentRef.current = false;
           correctAnswerRef.current = null;
@@ -243,13 +243,13 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
       )}
 
       {/* Hint */}
-      <div className="relative mt-5 flex items-end gap-3">
+      <div className="mt-5 flex items-end gap-3">
         <button
           onClick={() => setHintOpen((v) => !v)}
           className="btn-pop inline-flex items-center gap-2 rounded-full bg-sun px-4 py-2 text-sm font-extrabold text-navy"
         >
           <Lightbulb size={16} />
-          {t.getHint}
+          {hintOpen ? "Hide hint" : "Show hint"}
         </button>
         {hintOpen && (
           <div className="flex-1 animate-in slide-in-from-bottom-2 fade-in duration-300">
@@ -258,9 +258,6 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
             </SpeechBubble>
           </div>
         )}
-        <CharacterSlot id="hint-cat" blobClass="bg-transparent" className="ms-auto h-20 w-20">
-          <span className="text-5xl">🙈</span>
-        </CharacterSlot>
       </div>
 
       {/* Stars */}
