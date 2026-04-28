@@ -16,7 +16,7 @@ export function stateForCount(count: number): MatterState {
 // Each entry is [dx, dy] offsets from center. Unit = 1 "slot" = 40px.
 type Formation = Array<[number, number]>;
 
-const S = 40; // slot size in px
+const S = 80; // slot size in px
 
 export const FORMATIONS: Formation[] = [
   [],                                                                         // 0
@@ -36,8 +36,8 @@ export const FORMATIONS: Formation[] = [
 
 // Scale slot size by state (denser = smaller gaps)
 export function slotScale(state: MatterState): number {
-  if (state === "solid") return 0.7;
-  if (state === "liquid") return 0.85;
+  if (state === "solid") return 0.5;
+  if (state === "liquid") return 0.75;
   return 1.0;
 }
 
