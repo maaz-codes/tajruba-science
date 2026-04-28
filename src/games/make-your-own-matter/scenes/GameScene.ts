@@ -134,11 +134,7 @@ export class GameScene extends Phaser.Scene {
       }).setOrigin(0.5);
     }
 
-    // Tray
-    g.fillStyle(0xffffff, 0.9);
-    g.fillRoundedRect(TRAY.x - TRAY.w / 2, TRAY.y - TRAY.h / 2, TRAY.w, TRAY.h, 35);
-    g.lineStyle(2, 0xc7d2fe, 0.6);
-    g.strokeRoundedRect(TRAY.x - TRAY.w / 2, TRAY.y - TRAY.h / 2, TRAY.w, TRAY.h, 35);
+    // Tray rectangle hidden — bg image has its own tray visual
   }
 
   // ── Top bar ────────────────────────────────────────────────────────────────
@@ -196,12 +192,7 @@ export class GameScene extends Phaser.Scene {
   private buildHelperBubble() {
     const bx = 350, by = 530;
 
-    const bg = this.add.graphics();
-    bg.fillStyle(0xfef9c3, 1);
-    bg.fillRoundedRect(bx - 70, by - 22, 140, 44, 22);
-    bg.lineStyle(2, 0xfde047, 1);
-    bg.strokeRoundedRect(bx - 70, by - 22, 140, 44, 22);
-
+    // Bubble background hidden — bg image has its own thought bubble
     this.helperBubbleText = this.add.text(bx, by, "Make gas", {
       fontSize: "15px",
       fontStyle: "bold",
