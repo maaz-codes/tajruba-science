@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import { GAME_W, GAME_H, KEYS } from "../config";
+import { GAME_W, GAME_H } from "../config";
+import { playSynth } from "../sounds";
 
 export class StartScene extends Phaser.Scene {
   constructor() {
@@ -50,9 +51,7 @@ export class StartScene extends Phaser.Scene {
       btnBg.fillRoundedRect(GAME_W / 2 - 110, GAME_H / 2 + 20, 220, 60, 30);
     });
     btn.on("pointerdown", () => {
-      if (this.sound.get(KEYS.SFX_START)) {
-        this.sound.play(KEYS.SFX_START);
-      }
+      playSynth("start", false);
       this.cameras.main.fadeOut(300, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.scene.start("GameScene");
