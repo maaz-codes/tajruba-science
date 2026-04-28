@@ -679,7 +679,7 @@ export class GameScene extends Phaser.Scene {
     const order: MatterState[] = ["gas", "liquid", "solid"];
     const next = order.find((s) => !this.discovered[s]);
     if (next) {
-      const map: Record<string, string> = { gas: "Make gas", liquid: "Make liquid", solid: "Make solid" };
+      const map: Record<string, string> = { gas: "Make gas", liquid: "Drag more to make liquid", solid: "Drag more to make solid" };
       this.helperBubbleText.setText(map[next]);
     } else {
       this.helperBubbleText.setText("Try different combinations!");
