@@ -13,6 +13,7 @@ import confetti from "canvas-confetti";
 
 interface QuizPanelProps {
   gameId: GameId;
+  bgColor?: string;
 }
 
 function starsForScore(score: number, total: number): number {
@@ -23,7 +24,7 @@ function starsForScore(score: number, total: number): number {
   return 0;
 }
 
-export function QuizPanel({ gameId }: QuizPanelProps) {
+export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
   const { t, lang } = useLang();
   const { setGameStars, getGameStars } = useProgress();
   const questions = getQuiz(gameId, lang);
@@ -127,7 +128,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
 
   if (collapsed) {
     return (
-      <aside className="rounded-3xl bg-lilac-soft p-3 shadow-card">
+      <aside className="rounded-3xl bg-lilac-soft p-3 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
         <button
           onClick={() => setCollapsed(false)}
           className="flex w-full items-center justify-between text-left text-lg font-extrabold text-navy"
@@ -145,7 +146,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   if (done) {
     const previousBest = getGameStars(gameId);
     return (
-      <aside className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card">
+      <aside className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
         <h2 className="text-3xl font-extrabold text-navy">{t.quizCompleteTitle}</h2>
         <p className="mt-2 text-base font-bold text-navy/70">{t.quizCompleteSub(earned)}</p>
         <div className="mt-6 flex items-center justify-center">
@@ -164,7 +165,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   }
 
   return (
-    <aside className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card">
+    <aside className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
