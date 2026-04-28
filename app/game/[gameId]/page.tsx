@@ -102,7 +102,7 @@ const QUIZ_BG: Record<GameId, string | undefined> = {
   "make-your-own-matter": undefined,  // keeps default lilac-soft
   "water-the-plant":  "#CEECDF",
   "wadi-crossing":    "#FEE6BE",
-  "mosque-systems":   "#34CCB8",
+  "mosque-systems":   "#53D4C1",
 };
 
 // Map each gameId to its preview image path (in /public). Set to null when none exists.

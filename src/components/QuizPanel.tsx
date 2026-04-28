@@ -262,7 +262,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
       </div>
 
       {/* Stars */}
-      <div className="mt-auto flex items-center justify-between border-t border-lilac/30 pt-4">
+      <div className="mt-auto flex items-center justify-between pt-4">
         <span className="text-sm font-extrabold text-navy/80">{t.starsYouCanEarn}</span>
         <StarRow filled={0} outlineOnly size={28} />
       </div>
