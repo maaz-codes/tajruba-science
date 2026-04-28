@@ -13,6 +13,7 @@ import confetti from "canvas-confetti";
 
 interface QuizPanelProps {
   gameId: GameId;
+  bgColor?: string;
 }
 
 function starsForScore(score: number, total: number): number {
@@ -23,7 +24,7 @@ function starsForScore(score: number, total: number): number {
   return 0;
 }
 
-export function QuizPanel({ gameId }: QuizPanelProps) {
+export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
   const { t, lang } = useLang();
   const { setGameStars, getGameStars } = useProgress();
   const questions = getQuiz(gameId, lang);
@@ -36,7 +37,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   // New Quiz Engine States
   const [answerStates, setAnswerStates] = useState<('idle' | 'correct' | 'wrong')[]>(Array(10).fill('idle'));
   const [tryAgainVisible, setTryAgainVisible] = useState(false);
-  const [hintOpen, setHintOpen] = useState(false);
+  const [hintOpen, setHintOpen] = useState(true);
 
   // Refs for tracking without re-rendering
   const hasAnsweredCurrentRef = useRef(false);
@@ -116,7 +117,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
           // Advance to next question
           setIndex(index + 1);
           setAnswerStates(Array(10).fill('idle'));
-          setHintOpen(false);
+          // hint visibility intentionally preserved across questions
           setTryAgainVisible(false);
           hasAnsweredCurrentRef.current = false;
           correctAnswerRef.current = null;
@@ -127,7 +128,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
 
   if (collapsed) {
     return (
-      <aside className="rounded-3xl bg-lilac-soft p-3 shadow-card">
+      <aside className="rounded-3xl bg-lilac-soft p-3 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
         <button
           onClick={() => setCollapsed(false)}
           className="flex w-full items-center justify-between text-left text-lg font-extrabold text-navy"
@@ -145,7 +146,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   if (done) {
     const previousBest = getGameStars(gameId);
     return (
-      <aside className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card">
+      <aside className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
         <h2 className="text-3xl font-extrabold text-navy">{t.quizCompleteTitle}</h2>
         <p className="mt-2 text-base font-bold text-navy/70">{t.quizCompleteSub(earned)}</p>
         <div className="mt-6 flex items-center justify-center">
@@ -164,7 +165,7 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
   }
 
   return (
-    <aside className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card">
+    <aside className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -243,13 +244,13 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
       )}
 
       {/* Hint */}
-      <div className="relative mt-5 flex items-end gap-3">
+      <div className="mt-5 flex items-end gap-3">
         <button
           onClick={() => setHintOpen((v) => !v)}
           className="btn-pop inline-flex items-center gap-2 rounded-full bg-sun px-4 py-2 text-sm font-extrabold text-navy"
         >
           <Lightbulb size={16} />
-          {t.getHint}
+          {hintOpen ? "Hide hint" : "Show hint"}
         </button>
         {hintOpen && (
           <div className="flex-1 animate-in slide-in-from-bottom-2 fade-in duration-300">
@@ -258,9 +259,6 @@ export function QuizPanel({ gameId }: QuizPanelProps) {
             </SpeechBubble>
           </div>
         )}
-        <CharacterSlot id="hint-cat" blobClass="bg-transparent" className="ms-auto h-20 w-20">
-          <span className="text-5xl">🙈</span>
-        </CharacterSlot>
       </div>
 
       {/* Stars */}
