@@ -32,12 +32,16 @@ export const KEYS = {
   SFX_CHIME: "sfx_chime",
 } as const;
 
-// Panel sizing
-export const CUBE = { x: 160, y: 360, w: 220, h: 220 };
-export const CHARACTER = { x: 430, y: 360, w: 220, h: 220 };
-export const SLIDER = { x: 710, y: 360, w: 100, h: 220 };
-export const OUTPUT = { x: 920, y: 360, w: 220, h: 220 };
-export const TRAY = { x: 640, y: 650, w: 760, h: 70 };
+// Panel sizing — row is centered on canvas midpoint (640).
+// Total row width = 965px: cube(220)+25+char(220)+30+op(30)+30+slider(100)+30+op(30)+30+output(220)
+export const CUBE       = { x: 268,  y: 360, w: 220, h: 220 };
+export const CHARACTER  = { x: 513,  y: 360, w: 220, h: 220 };
+export const SLIDER     = { x: 763,  y: 360, w: 100, h: 220 };
+export const OUTPUT     = { x: 1013, y: 360, w: 220, h: 220 };
+export const TRAY       = { x: 640,  y: 650, w: 860, h: 70 };
+// Operator x positions (between panels)
+export const OP_PLUS  = 668;  // between CHARACTER and SLIDER
+export const OP_EQUAL = 858;  // between SLIDER and OUTPUT
 
 // Particle visuals
 export const PARTICLE_RADIUS = 20;

@@ -32,27 +32,27 @@ export class BootScene extends Phaser.Scene {
   }
 
   private makeSliderIcons() {
-    const items: Array<{ key: string; color: number; label: string }> = [
-      { key: KEYS.SLIDER_EARTH, color: 0x8b6c4f, label: "E" },
-      { key: KEYS.SLIDER_TREE, color: 0x4caf50, label: "T" },
-      { key: KEYS.SLIDER_INDUSTRY, color: 0x9e9e9e, label: "I" },
+    const items: Array<{ key: string; color: number; emoji: string }> = [
+      { key: KEYS.SLIDER_EARTH, color: 0x8b6c4f, emoji: "🌍" },
+      { key: KEYS.SLIDER_TREE,  color: 0x4caf50, emoji: "🌳" },
+      { key: KEYS.SLIDER_INDUSTRY, color: 0x9e9e9e, emoji: "🏭" },
     ];
     for (const item of items) {
-      const g = this.add.graphics();
+      // Draw background via Graphics, then overlay emoji via RenderTexture
+      const size = 64;
+      const rt = this.add.renderTexture(0, 0, size, size).setVisible(false);
+      const g = this.add.graphics().setVisible(false);
       g.fillStyle(item.color, 1);
-      g.fillRoundedRect(0, 0, 64, 64, 12);
-      g.generateTexture(item.key, 64, 64);
-      g.destroy();
-      // Add label text drawn onto the texture via RT
-      const rt = this.add.renderTexture(0, 0, 64, 64);
-      rt.setVisible(false);
-      const t = this.add.text(32, 32, item.label, {
-        fontSize: "28px",
-        fontStyle: "bold",
-        color: "#ffffff",
-      }).setOrigin(0.5);
+      g.fillRoundedRect(0, 0, size, size, 12);
+      rt.draw(g, 0, 0);
+
+      const t = this.add.text(size / 2, size / 2, item.emoji, {
+        fontSize: "32px",
+      }).setOrigin(0.5).setVisible(false);
       rt.draw(t, 0, 0);
       rt.saveTexture(item.key);
+
+      g.destroy();
       t.destroy();
       rt.destroy();
     }
