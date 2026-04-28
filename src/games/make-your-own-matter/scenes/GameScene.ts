@@ -6,8 +6,8 @@ import {
   OP_PLUS, OP_EQUAL,
   PARTICLE_RADIUS,
   PARTICLE_COLOR,
-  PARTICLE_TRAY_SPACING,
 } from "../config";
+import { playSynth } from "../sounds";
 import {
   MatterState,
   stateForCount,
@@ -330,7 +330,7 @@ export class GameScene extends Phaser.Scene {
     if (this.sliderIndex === index) return;
     this.sliderIndex = index;
     this.refreshSliderHighlight();
-    this.playSfx(KEYS.SFX_TICK);
+    playSynth("tick", this.muted);
     this.updateOutput();
   }
 
@@ -423,13 +423,13 @@ export class GameScene extends Phaser.Scene {
         p.inCube = true;
         p.trayIndex = -1;
         this.cubeCount++;
-        this.playSfx(KEYS.SFX_POP);
+        playSynth("pop", this.muted);
         this.rearrangeCube();
       } else if (!inCubeNow && wasInCube) {
         p.inCube = false;
         this.cubeCount--;
         this.returnParticleToTray(p);
-        this.playSfx(KEYS.SFX_POP);
+        playSynth("pop", this.muted);
         this.rearrangeCube();
       } else if (!inCubeNow && !wasInCube) {
         // Snapped back to tray slot
@@ -530,7 +530,7 @@ export class GameScene extends Phaser.Scene {
     if (state !== "empty" && !this.discovered[state]) {
       this.discovered[state] = true;
       this.lightBadge(state);
-      this.playSfx(KEYS.SFX_CHIME);
+      playSynth("chime", this.muted);
     }
   }
 
@@ -644,10 +644,4 @@ export class GameScene extends Phaser.Scene {
     if (this.blinkTimer > 3500) this.blinkTimer = 0;
   }
 
-  // ── Audio ─────────────────────────────────────────────────────────────────
-  private playSfx(key: string) {
-    if (!this.muted && this.cache.audio.has(key)) {
-      this.sound.play(key);
-    }
-  }
 }
