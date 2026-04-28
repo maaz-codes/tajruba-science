@@ -51,7 +51,7 @@ export class GameScene extends Phaser.Scene {
   // Slider display
   private sliderItemImages: Phaser.GameObjects.Image[] = [];
   private sliderHighlight!: Phaser.GameObjects.Graphics;
-  private sliderDragStartY = 0;
+  private sliderDragStartY = -1;
   private sliderDragActive = false;
 
   // Character animation
@@ -281,55 +281,57 @@ export class GameScene extends Phaser.Scene {
       const img = this.add.image(sx, iy, ICON_KEYS[i]);
       img.setDisplaySize(SLIDER_ITEM_SIZE, SLIDER_ITEM_SIZE);
       img.setInteractive({ cursor: "pointer" });
-      img.on("pointerdown", () => {
-        if (this.sliderIndex !== i) {
-          this.sliderIndex = i;
-          this.refreshSliderHighlight();
-          this.playSfx(KEYS.SFX_TICK);
-          this.updateOutput();
+
+      // Click to select
+      img.on("pointerup", (_ptr: Phaser.Input.Pointer) => {
+        // Only treat as click if not dragging
+        if (!this.sliderDragActive) {
+          this.selectSliderItem(i);
         }
       });
+
+      // Start drag from this image
+      img.on("pointerdown", (ptr: Phaser.Input.Pointer) => {
+        this.sliderDragStartY = ptr.y;
+        this.sliderDragActive = false; // becomes true once movement threshold is crossed
+      });
+
       this.sliderItemImages.push(img);
     }
 
-    // Selection highlight (moves to selected item)
-    this.sliderHighlight = this.add.graphics();
+    // Selection highlight drawn behind items
+    this.sliderHighlight = this.add.graphics().setDepth(-1);
     this.refreshSliderHighlight();
 
-    // Drag zone over the slider panel
-    const zone = this.add.zone(sx, SLIDER.y, SLIDER.w + 20, SLIDER.h).setInteractive();
-
-    zone.on("pointerdown", (ptr: Phaser.Input.Pointer) => {
-      this.sliderDragStartY = ptr.y;
-      this.sliderDragActive = true;
-    });
-
-    zone.on("pointermove", (ptr: Phaser.Input.Pointer) => {
-      if (!this.sliderDragActive) return;
+    // Scene-level move/up to handle drag that starts on any image
+    this.input.on("pointermove", (ptr: Phaser.Input.Pointer) => {
+      if (!ptr.isDown || this.sliderDragStartY === -1) return;
       const dy = ptr.y - this.sliderDragStartY;
-      // Each item occupies SLIDER_ITEM_SIZE + SLIDER_GAP pixels
-      const threshold = (SLIDER_ITEM_SIZE + SLIDER_GAP) * 0.5;
+      const threshold = (SLIDER_ITEM_SIZE + SLIDER_GAP) * 0.45;
       if (Math.abs(dy) >= threshold) {
+        this.sliderDragActive = true;
         const delta = dy > 0 ? 1 : -1;
         const next = Phaser.Math.Clamp(this.sliderIndex + delta, 0, SLIDER_ITEMS.length - 1);
         if (next !== this.sliderIndex) {
-          this.sliderIndex = next;
-          this.refreshSliderHighlight();
-          this.playSfx(KEYS.SFX_TICK);
-          this.updateOutput();
+          this.selectSliderItem(next);
         }
-        // Reset drag start so continuous dragging keeps working
         this.sliderDragStartY = ptr.y;
       }
     });
 
-    zone.on("pointerup", () => {
-      this.sliderDragActive = false;
+    this.input.on("pointerup", () => {
+      this.sliderDragStartY = -1;
+      // Reset drag flag after a tick so pointerup on image fires as click when no drag happened
+      this.time.delayedCall(10, () => { this.sliderDragActive = false; });
     });
+  }
 
-    zone.on("pointerout", () => {
-      this.sliderDragActive = false;
-    });
+  private selectSliderItem(index: number) {
+    if (this.sliderIndex === index) return;
+    this.sliderIndex = index;
+    this.refreshSliderHighlight();
+    this.playSfx(KEYS.SFX_TICK);
+    this.updateOutput();
   }
 
   private refreshSliderHighlight() {
@@ -387,7 +389,7 @@ export class GameScene extends Phaser.Scene {
     for (let i = 0; i < 12; i++) {
       const sprite = this.add.image(this.traySlotX(i), TRAY.y, KEYS.PARTICLE);
       sprite.setDisplaySize((PARTICLE_RADIUS + 4) * 2, (PARTICLE_RADIUS + 4) * 2);
-      sprite.setInteractive({ draggable: true });
+      sprite.setInteractive({ draggable: true, cursor: "grab" });
       this.particles.push({ sprite, inCube: false, trayIndex: i });
     }
   }
@@ -399,6 +401,7 @@ export class GameScene extends Phaser.Scene {
       if (!p) return;
       this.dragParticle = p;
       obj.setDepth(10);
+      this.input.setDefaultCursor("grabbing");
     });
 
     this.input.on("drag", (_ptr: Phaser.Input.Pointer, obj: Phaser.GameObjects.Image, dx: number, dy: number) => {
@@ -411,6 +414,7 @@ export class GameScene extends Phaser.Scene {
       this.dragParticle = null;
       if (!p) return;
       obj.setDepth(0);
+      this.input.setDefaultCursor("default");
 
       const inCubeNow = this.isInsideCube(obj.x, obj.y);
       const wasInCube = p.inCube;
