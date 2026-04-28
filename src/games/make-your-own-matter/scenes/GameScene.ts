@@ -28,8 +28,8 @@ interface Particle {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const BADGE_STATES: MatterState[] = ["gas", "liquid", "solid"];
-const SLIDER_CELL_H = 80;
-const SLIDER_VISIBLE = 3;
+const SLIDER_ITEM_SIZE = 60;
+const SLIDER_GAP = 10;
 
 export class GameScene extends Phaser.Scene {
   // ── State ──────────────────────────────────────────────────────────────────
@@ -49,11 +49,10 @@ export class GameScene extends Phaser.Scene {
   private muteBtn!: Phaser.GameObjects.Text;
 
   // Slider display
-  private sliderCells: Phaser.GameObjects.Image[] = [];
-  private sliderContainer!: Phaser.GameObjects.Container;
-  private sliderDragStart = 0;
-  private sliderOffsetY = 0;
-  private sliderBaseY = 0;
+  private sliderItemImages: Phaser.GameObjects.Image[] = [];
+  private sliderHighlight!: Phaser.GameObjects.Graphics;
+  private sliderDragStartY = 0;
+  private sliderDragActive = false;
 
   // Character animation
   private charDots: Phaser.GameObjects.Arc[] = [];
@@ -91,7 +90,6 @@ export class GameScene extends Phaser.Scene {
 
   update(_time: number, delta: number) {
     this.animateCharacter(delta);
-    this.animateSliderInertia();
   }
 
   // ── Background ─────────────────────────────────────────────────────────────
@@ -270,78 +268,77 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ── Slider ─────────────────────────────────────────────────────────────────
+  // Simple 3-item vertical list. Drag up/down to cycle selection.
   private buildSlider() {
-    const sx = SLIDER.x, sy = SLIDER.y;
+    const sx = SLIDER.x;
+    const totalH = SLIDER_ITEMS.length * (SLIDER_ITEM_SIZE + SLIDER_GAP) - SLIDER_GAP;
+    const startY = SLIDER.y - totalH / 2 + SLIDER_ITEM_SIZE / 2;
 
-    this.sliderContainer = this.add.container(sx, sy);
-    this.sliderBaseY = sy;
-
-    // Build cells — 3 items × 2 for seamless looping wrap
     const ICON_KEYS = [KEYS.SLIDER_EARTH, KEYS.SLIDER_TREE, KEYS.SLIDER_INDUSTRY];
-    for (let i = 0; i < SLIDER_ITEMS.length * 2; i++) {
-      const itemIdx = i % SLIDER_ITEMS.length;
-      const img = this.add.image(0, (i - 1) * SLIDER_CELL_H, ICON_KEYS[itemIdx]);
-      img.setDisplaySize(56, 56);
-      this.sliderContainer.add(img);
-      this.sliderCells.push(img);
+
+    for (let i = 0; i < SLIDER_ITEMS.length; i++) {
+      const iy = startY + i * (SLIDER_ITEM_SIZE + SLIDER_GAP);
+      const img = this.add.image(sx, iy, ICON_KEYS[i]);
+      img.setDisplaySize(SLIDER_ITEM_SIZE, SLIDER_ITEM_SIZE);
+      this.sliderItemImages.push(img);
     }
 
-    // Selection highlight
-    const hl = this.add.graphics();
-    hl.lineStyle(3, 0x6366f1, 1);
-    hl.strokeRoundedRect(sx - 38, sy - 36, 76, 72, 12);
-    hl.fillStyle(0x6366f1, 0.08);
-    hl.fillRoundedRect(sx - 38, sy - 36, 76, 72, 12);
+    // Selection highlight (moves to selected item)
+    this.sliderHighlight = this.add.graphics();
+    this.refreshSliderHighlight();
 
-    // Touch/drag on slider
-    const sliderZone = this.add.zone(sx, sy, SLIDER.w, SLIDER.h).setInteractive();
-    sliderZone.on("pointerdown", (ptr: Phaser.Input.Pointer) => {
-      this.sliderDragStart = ptr.y;
-      this.sliderOffsetY = this.sliderContainer.y - this.sliderBaseY;
+    // Drag zone over the slider panel
+    const zone = this.add.zone(sx, SLIDER.y, SLIDER.w + 20, SLIDER.h).setInteractive();
+
+    zone.on("pointerdown", (ptr: Phaser.Input.Pointer) => {
+      this.sliderDragStartY = ptr.y;
+      this.sliderDragActive = true;
     });
-    sliderZone.on("pointermove", (ptr: Phaser.Input.Pointer) => {
-      if (!ptr.isDown) return;
-      const dy = ptr.y - this.sliderDragStart;
-      this.sliderContainer.y = this.sliderBaseY + this.sliderOffsetY + dy;
-      this.updateSliderIndex();
+
+    zone.on("pointermove", (ptr: Phaser.Input.Pointer) => {
+      if (!this.sliderDragActive) return;
+      const dy = ptr.y - this.sliderDragStartY;
+      // Each item occupies SLIDER_ITEM_SIZE + SLIDER_GAP pixels
+      const threshold = (SLIDER_ITEM_SIZE + SLIDER_GAP) * 0.5;
+      if (Math.abs(dy) >= threshold) {
+        const delta = dy > 0 ? 1 : -1;
+        const next = Phaser.Math.Clamp(this.sliderIndex + delta, 0, SLIDER_ITEMS.length - 1);
+        if (next !== this.sliderIndex) {
+          this.sliderIndex = next;
+          this.refreshSliderHighlight();
+          this.playSfx(KEYS.SFX_TICK);
+          this.updateOutput();
+        }
+        // Reset drag start so continuous dragging keeps working
+        this.sliderDragStartY = ptr.y;
+      }
     });
-    sliderZone.on("pointerup", () => {
-      this.snapSlider();
+
+    zone.on("pointerup", () => {
+      this.sliderDragActive = false;
+    });
+
+    zone.on("pointerout", () => {
+      this.sliderDragActive = false;
     });
   }
 
-  private updateSliderIndex() {
-    const offset = this.sliderContainer.y - this.sliderBaseY;
-    const raw = Math.round(-offset / SLIDER_CELL_H);
-    const idx = ((raw % SLIDER_ITEMS.length) + SLIDER_ITEMS.length) % SLIDER_ITEMS.length;
-    if (idx !== this.sliderIndex) {
-      this.sliderIndex = idx;
-      this.playSfx(KEYS.SFX_TICK);
-      this.updateOutput();
-    }
-  }
+  private refreshSliderHighlight() {
+    const totalH = SLIDER_ITEMS.length * (SLIDER_ITEM_SIZE + SLIDER_GAP) - SLIDER_GAP;
+    const startY = SLIDER.y - totalH / 2 + SLIDER_ITEM_SIZE / 2;
+    const iy = startY + this.sliderIndex * (SLIDER_ITEM_SIZE + SLIDER_GAP);
+    const half = SLIDER_ITEM_SIZE / 2 + 4;
 
-  private snapSlider() {
-    const offset = this.sliderContainer.y - this.sliderBaseY;
-    const snapped = -Math.round(-offset / SLIDER_CELL_H) * SLIDER_CELL_H;
-    this.tweens.add({
-      targets: this.sliderContainer,
-      y: this.sliderBaseY + snapped,
-      duration: 150,
-      ease: "Back.easeOut",
+    this.sliderHighlight.clear();
+    this.sliderHighlight.fillStyle(0x6366f1, 0.1);
+    this.sliderHighlight.fillRoundedRect(SLIDER.x - half, iy - half, half * 2, half * 2, 12);
+    this.sliderHighlight.lineStyle(2, 0x6366f1, 0.9);
+    this.sliderHighlight.strokeRoundedRect(SLIDER.x - half, iy - half, half * 2, half * 2, 12);
+
+    // Dim non-selected items
+    this.sliderItemImages.forEach((img, i) => {
+      img.setAlpha(i === this.sliderIndex ? 1 : 0.35);
     });
-    this.updateSliderIndex();
-  }
-
-  private animateSliderInertia() {
-    // Keep slider within wrapping bounds
-    const total = SLIDER_ITEMS.length * SLIDER_CELL_H;
-    const offset = this.sliderContainer.y - this.sliderBaseY;
-    if (offset > SLIDER_CELL_H) {
-      this.sliderContainer.y -= total;
-    } else if (offset < -(total - SLIDER_CELL_H)) {
-      this.sliderContainer.y += total;
-    }
   }
 
   // ── Output box ─────────────────────────────────────────────────────────────
