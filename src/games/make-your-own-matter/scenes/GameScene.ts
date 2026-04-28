@@ -3,6 +3,7 @@ import {
   GAME_W, GAME_H,
   KEYS,
   CUBE, CHARACTER, SLIDER, OUTPUT, TRAY,
+  OP_PLUS, OP_EQUAL,
   PARTICLE_RADIUS,
   PARTICLE_COLOR,
   PARTICLE_TRAY_SPACING,
@@ -126,10 +127,10 @@ export class GameScene extends Phaser.Scene {
     g.lineStyle(2, 0xc7d2fe, 0.8);
     g.strokeRoundedRect(SLIDER.x - SLIDER.w / 2, SLIDER.y - SLIDER.h / 2, SLIDER.w, SLIDER.h, 16);
 
-    // Operator labels
+    // Operator labels — + between character and slider, = between slider and output
     const ops = [
-      { x: (CUBE.x + CHARACTER.x) / 2, y: CHARACTER.y, t: "+" },
-      { x: (SLIDER.x + OUTPUT.x) / 2, y: OUTPUT.y, t: "=" },
+      { x: OP_PLUS,  y: CHARACTER.y, t: "+" },
+      { x: OP_EQUAL, y: OUTPUT.y,    t: "=" },
     ];
     for (const op of ops) {
       this.add.text(op.x, op.y, op.t, {
@@ -275,11 +276,11 @@ export class GameScene extends Phaser.Scene {
     this.sliderContainer = this.add.container(sx, sy);
     this.sliderBaseY = sy;
 
-    // Build 5 cells (looping: one above, center, one below + extras for wrapping feel)
+    // Build cells — 3 items × 2 for seamless looping wrap
+    const ICON_KEYS = [KEYS.SLIDER_EARTH, KEYS.SLIDER_TREE, KEYS.SLIDER_INDUSTRY];
     for (let i = 0; i < SLIDER_ITEMS.length * 2; i++) {
       const itemIdx = i % SLIDER_ITEMS.length;
-      const key = ["slider_earth", "slider_tree", "slider_industry"][itemIdx] as keyof typeof KEYS;
-      const img = this.add.image(0, (i - 1) * SLIDER_CELL_H, KEYS[key]);
+      const img = this.add.image(0, (i - 1) * SLIDER_CELL_H, ICON_KEYS[itemIdx]);
       img.setDisplaySize(56, 56);
       this.sliderContainer.add(img);
       this.sliderCells.push(img);
@@ -369,7 +370,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private traySlotX(index: number): number {
-    return TRAY.x - (11 * PARTICLE_TRAY_SPACING) / 2 + index * PARTICLE_TRAY_SPACING;
+    // 12 slots centered in tray; spacing fits within tray width with padding
+    const usableWidth = TRAY.w - 80;
+    const spacing = usableWidth / 11;
+    return TRAY.x - usableWidth / 2 + index * spacing;
   }
 
   // ── Particles ─────────────────────────────────────────────────────────────
