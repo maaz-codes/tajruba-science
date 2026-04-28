@@ -74,3 +74,15 @@ export const OP_EQUAL = 858;  // between SLIDER and OUTPUT
 export const PARTICLE_RADIUS = 20;
 export const PARTICLE_COLOR = 0x5b9cf6;
 export const PARTICLE_TRAY_SPACING = 54;
+
+// Typography — matches site globals.css (Nunito already loaded by Next.js)
+export const FONT = "Nunito, Arial, sans-serif";
+
+// Brand colours (hex equivalents of site oklch tokens)
+export const COLOR = {
+  NAVY:    "#1e2d5f",   // oklch(0.24 0.09 285)
+  PRIMARY: "#4f46e5",   // oklch(0.52 0.22 285)  — primary buttons, accents
+  PRIMARY_DEEP: "#312e81", // oklch(0.32 0.15 285)
+  WHITE:   "#ffffff",
+  TEXT_MUTED: "#6366f1",
+} as const;

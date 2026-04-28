@@ -5,6 +5,7 @@ import {
   CUBE, CHARACTER, SLIDER, OUTPUT, TRAY,
   OP_PLUS, OP_EQUAL,
   PARTICLE_RADIUS,
+  FONT, COLOR,
 } from "../config";
 import { playSynth } from "../sounds";
 import {
@@ -130,9 +131,8 @@ export class GameScene extends Phaser.Scene {
     ];
     for (const op of ops) {
       this.add.text(op.x, op.y, op.t, {
-        fontSize: "40px",
-        fontStyle: "bold",
-        color: "#6366f1",
+        fontFamily: FONT, fontSize: "40px", fontStyle: "bold",
+        color: COLOR.PRIMARY,
       }).setOrigin(0.5);
     }
 
@@ -142,14 +142,13 @@ export class GameScene extends Phaser.Scene {
   // ── Top bar ────────────────────────────────────────────────────────────────
   private buildTopBar() {
     this.add.text(GAME_W / 2, 42, "Explore Matter with Particles!", {
-      fontSize: "28px",
-      fontStyle: "bold",
-      color: "#312e81",
+      fontFamily: FONT, fontSize: "28px", fontStyle: "bold",
+      color: COLOR.NAVY,
     }).setOrigin(0.5);
 
     this.add.text(GAME_W / 2, 76, "Arrange the particles to match the state of matter.", {
-      fontSize: "16px",
-      color: "#6366f1",
+      fontFamily: FONT, fontSize: "16px", fontStyle: "normal",
+      color: COLOR.TEXT_MUTED,
     }).setOrigin(0.5);
   }
 
@@ -168,37 +167,53 @@ export class GameScene extends Phaser.Scene {
       fitInBox(img, 70, 70);
 
       this.add.text(x, y + 26, labels[i], {
-        fontSize: "12px",
-        fontStyle: "bold",
-        color: "#6366f1",
+        fontFamily: FONT, fontSize: "12px", fontStyle: "bold",
+        color: COLOR.PRIMARY,
       }).setOrigin(0.5).setAlpha(0.4);
 
       this.badgeImages.push(img);
     }
   }
 
-  // ── Mute button ────────────────────────────────────────────────────────────
+  // ── Mute button — circular, matches site's rounded-full icon buttons ─────────
   private buildMuteButton() {
-    this.muteBtn = this.add.text(36, 36, "🔊", {
-      fontSize: "26px",
-    }).setOrigin(0.5).setInteractive({ cursor: "pointer" });
+    const cx = 42, cy = 42, r = 22;
 
-    this.muteBtn.on("pointerdown", () => {
+    const circle = this.add.graphics();
+    this.drawMuteCircle(circle, cx, cy, r, false);
+
+    this.muteBtn = this.add.text(cx, cy + 1, "♪", {
+      fontFamily: FONT, fontSize: "18px", fontStyle: "bold",
+      color: COLOR.WHITE,
+    }).setOrigin(0.5);
+
+    const zone = this.add.zone(cx, cy, r * 2, r * 2).setInteractive({ cursor: "pointer" });
+    zone.on("pointerdown", () => {
       this.muted = !this.muted;
       this.sound.setMute(this.muted);
-      this.muteBtn.setText(this.muted ? "🔇" : "🔊");
+      this.drawMuteCircle(circle, cx, cy, r, this.muted);
+      this.muteBtn.setText(this.muted ? "✕" : "♪");
     });
+  }
+
+  private drawMuteCircle(g: Phaser.GameObjects.Graphics, cx: number, cy: number, r: number, muted: boolean) {
+    g.clear();
+    // Shadow
+    g.fillStyle(0x000000, 0.15);
+    g.fillCircle(cx, cy + 4, r);
+    // Main circle
+    g.fillStyle(muted ? 0x94a3b8 : 0x4f46e5, 1);
+    g.fillCircle(cx, cy, r);
   }
 
   // ── Helper bubble ──────────────────────────────────────────────────────────
   private buildHelperBubble() {
-    const bx = 350, by = 530;
+    const bx = 290, by = 530;
 
     // Bubble background hidden — bg image has its own thought bubble
     this.helperBubbleText = this.add.text(bx, by, "Drag particles to make matter!", {
-      fontSize: "15px",
-      fontStyle: "bold",
-      color: "#854d0e",
+      fontFamily: FONT, fontSize: "15px", fontStyle: "bold",
+      color: COLOR.NAVY,
       align: "left",
     }).setOrigin(0, 0.5);
 
@@ -215,21 +230,17 @@ export class GameScene extends Phaser.Scene {
 
     // State label below image
     this.stateLabelText = this.add.text(cx, cy + CHARACTER.h / 2 - 18, "", {
-      fontSize: "16px",
-      fontStyle: "bold",
-      color: "#6366f1",
+      fontFamily: FONT, fontSize: "16px", fontStyle: "bold",
+      color: COLOR.PRIMARY,
     }).setOrigin(0.5);
   }
 
   // ── Cube hint ──────────────────────────────────────────────────────────────
   private buildCubeHint() {
     this.cubeHintText = this.add.text(CUBE.x, CUBE.y, "Drop\nparticles\nhere", {
-      fontSize: "16px",
-      fontStyle: "bold",
-      color: "#a5b4fc",
-      align: "center",
-      lineSpacing: 4,
-    }).setOrigin(0.5).setAlpha(0.8);
+      fontFamily: FONT, fontSize: "16px", fontStyle: "bold",
+      color: COLOR.PRIMARY, align: "center", lineSpacing: 4,
+    }).setOrigin(0.5).setAlpha(0.6);
   }
 
   // ── Slider ─────────────────────────────────────────────────────────────────
@@ -325,9 +336,8 @@ export class GameScene extends Phaser.Scene {
     fitInBox(this.outputImage, OUTPUT.w - 24, OUTPUT.h - 50);
 
     this.outputLabel = this.add.text(ox, oy + 60, "", {
-      fontSize: "17px",
-      fontStyle: "bold",
-      color: "#312e81",
+      fontFamily: FONT, fontSize: "17px", fontStyle: "bold",
+      color: COLOR.NAVY,
     }).setOrigin(0.5);
   }
 

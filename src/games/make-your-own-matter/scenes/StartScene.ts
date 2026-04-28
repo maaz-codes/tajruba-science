@@ -1,6 +1,11 @@
 import Phaser from "phaser";
-import { GAME_W, GAME_H } from "../config";
+import { GAME_W, GAME_H, KEYS, FONT, COLOR } from "../config";
 import { playSynth } from "../sounds";
+
+const BTN_W = 240;
+const BTN_H = 58;
+const BTN_R = 16; // border-radius matching site's rounded-2xl
+const BTN_SHADOW = 5; // chunky bottom shadow depth (btn-pop style)
 
 export class StartScene extends Phaser.Scene {
   constructor() {
@@ -8,54 +13,77 @@ export class StartScene extends Phaser.Scene {
   }
 
   create() {
-    // Background overlay
-    const bg = this.add.graphics();
-    bg.fillStyle(0x6366f1, 1);
-    bg.fillRect(0, 0, GAME_W, GAME_H);
+    // Use game background image if available, else fallback colour
+    if (this.textures.exists(KEYS.BG)) {
+      this.add.image(GAME_W / 2, GAME_H / 2, KEYS.BG).setDisplaySize(GAME_W, GAME_H);
+    } else {
+      this.add.graphics().fillStyle(0xeef2ff, 1).fillRect(0, 0, GAME_W, GAME_H);
+    }
+
+    // Semi-transparent overlay so text pops
+    const overlay = this.add.graphics();
+    overlay.fillStyle(0xffffff, 0.55);
+    overlay.fillRoundedRect(GAME_W / 2 - 280, GAME_H / 2 - 110, 560, 220, 24);
 
     // Title
-    this.add.text(GAME_W / 2, GAME_H / 2 - 80, "Make Your Own Matter", {
-      fontSize: "42px",
-      fontStyle: "bold",
-      color: "#ffffff",
+    this.add.text(GAME_W / 2, GAME_H / 2 - 58, "Make Your Own Matter", {
+      fontFamily: FONT, fontSize: "36px", fontStyle: "bold",
+      color: COLOR.NAVY,
     }).setOrigin(0.5);
 
-    this.add.text(GAME_W / 2, GAME_H / 2 - 28, "Drag particles and discover the states of matter!", {
-      fontSize: "20px",
-      color: "#e0e7ff",
+    // Subtitle
+    this.add.text(GAME_W / 2, GAME_H / 2 - 16, "Discover the states of matter by dragging particles.", {
+      fontFamily: FONT, fontSize: "16px", fontStyle: "normal",
+      color: COLOR.TEXT_MUTED,
     }).setOrigin(0.5);
 
-    // Start button
-    const btnBg = this.add.graphics();
-    btnBg.fillStyle(0xffffff, 1);
-    btnBg.fillRoundedRect(GAME_W / 2 - 110, GAME_H / 2 + 20, 220, 60, 30);
+    // btn-pop style button
+    const bx = GAME_W / 2, by = GAME_H / 2 + 48;
+    const btnGfx = this.add.graphics();
+    this.drawBtn(btnGfx, bx, by, false);
 
-    const btnLabel = this.add.text(GAME_W / 2, GAME_H / 2 + 50, "Start Experiment", {
-      fontSize: "22px",
-      fontStyle: "bold",
-      color: "#4f46e5",
+    const btnLabel = this.add.text(bx, by, "Start Experiment", {
+      fontFamily: FONT, fontSize: "20px", fontStyle: "bold",
+      color: COLOR.WHITE,
     }).setOrigin(0.5);
 
-    // Hit area
-    const btn = this.add.zone(GAME_W / 2, GAME_H / 2 + 50, 220, 60)
+    const zone = this.add.zone(bx, by + BTN_SHADOW / 2, BTN_W, BTN_H + BTN_SHADOW)
       .setInteractive({ cursor: "pointer" });
 
-    btn.on("pointerover", () => {
-      btnBg.clear();
-      btnBg.fillStyle(0xeef2ff, 1);
-      btnBg.fillRoundedRect(GAME_W / 2 - 110, GAME_H / 2 + 20, 220, 60, 30);
+    zone.on("pointerover",  () => { this.drawBtn(btnGfx, bx, by, false, true); });
+    zone.on("pointerout",   () => { this.drawBtn(btnGfx, bx, by, false); });
+    zone.on("pointerdown",  () => {
+      this.drawBtn(btnGfx, bx, by, true);
+      btnLabel.setY(by + 2);
     });
-    btn.on("pointerout", () => {
-      btnBg.clear();
-      btnBg.fillStyle(0xffffff, 1);
-      btnBg.fillRoundedRect(GAME_W / 2 - 110, GAME_H / 2 + 20, 220, 60, 30);
-    });
-    btn.on("pointerdown", () => {
+    zone.on("pointerup", () => {
       playSynth("start", false);
-      this.cameras.main.fadeOut(300, 0, 0, 0);
-      this.cameras.main.once("camerafadeoutcomplete", () => {
-        this.scene.start("GameScene");
-      });
+      this.drawBtn(btnGfx, bx, by, false);
+      btnLabel.setY(by);
+      this.cameras.main.fadeOut(280, 255, 255, 255);
+      this.cameras.main.once("camerafadeoutcomplete", () => this.scene.start("GameScene"));
     });
+  }
+
+  // Draws the btn-pop rounded-rect button
+  private drawBtn(
+    g: Phaser.GameObjects.Graphics,
+    cx: number, cy: number,
+    pressed: boolean,
+    hover = false,
+  ) {
+    g.clear();
+    const x = cx - BTN_W / 2;
+    const y = cy - BTN_H / 2;
+    const shadow = pressed ? 1 : BTN_SHADOW;
+    const lift = pressed ? 0 : (hover ? -1 : 0);
+
+    // Shadow layer (darker shade of primary)
+    g.fillStyle(0x312e81, 1);
+    g.fillRoundedRect(x, y + shadow + lift, BTN_W, BTN_H, BTN_R);
+
+    // Main button face
+    g.fillStyle(hover ? 0x4338ca : 0x4f46e5, 1);
+    g.fillRoundedRect(x, y + lift, BTN_W, BTN_H, BTN_R);
   }
 }
