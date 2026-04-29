@@ -62,14 +62,14 @@ export const GAME_SUB_TOPICS: Record<GameId, [string, string, string]> = {
     "Cooling water vapor causes condensation and helps form clouds.",
   ],
   "wadi-crossing": [
-    "Matter changes state when energy is added or removed.",
-    "Each state of matter has different properties that affect movement.",
-    "Understanding states of matter helps us solve real-world problems.",
+    "Matter can change state between solid, liquid, and gas.",
+    "Different states of matter help in different situations.",
+    "Liquids flow and fit into any space they move through.",
   ],
   "mosque-systems": [
-    "Buildings use materials in different states of matter.",
-    "Air, water, and solid structures each play a role in architecture.",
-    "The properties of matter determine how it is used in construction.",
+    "Solids keep their shape and are more stable in a structure.",
+    "Liquids can flow and take the shape of their container.",
+    "Different states of matter react differently to forces.",
   ],
 };
 

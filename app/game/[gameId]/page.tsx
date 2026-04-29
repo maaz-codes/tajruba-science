@@ -108,8 +108,8 @@ const QUIZ_BG: Record<GameId, string | undefined> = {
 const GAME_PREVIEWS: Record<GameId, string | null> = {
   "make-your-own-matter": "/game-1-ref.png",
   "water-the-plant": "/game-2-ref.png",
-  "wadi-crossing": "/game-2-ref.png",
-  "mosque-systems": "/game-2-ref.png",
+  "wadi-crossing": "/game-3-ref.png",
+  "mosque-systems": "/game-4-ref.png",
 };
 
 // Style of "coming soon" overlay for each non-playable game
