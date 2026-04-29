@@ -23,8 +23,8 @@ interface CharacterSlotProps {
  * replacing the children with an <img> import.
  *
  * Slots used in the app (see src/assets/characters/README.md):
- *   panda-scientist, magnifier-bird, cat-celebrating, cat-explorer,
- *   solid-cube, liquid-droplet, gas-cloud, panda-with-tray,
+ *   camel-hero, falcon-oryx, cat-celebrating, cat-explorer,
+ *   solid-cube, liquid-droplet, gas-cloud, camel-with-flask,
  *   droplet-and-plant, explorer-running, owl-with-mosque,
  *   gas-particle, liquid-particle, solid-particle, hint-cat
  */

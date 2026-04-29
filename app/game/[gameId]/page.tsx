@@ -105,13 +105,14 @@ const QUIZ_BG: Record<GameId, string | undefined> = {
   "mosque-systems":   "#53D4C1",
 };
 
-// Map each gameId to its preview image path (in /public). Set to null when none exists.
 const GAME_PREVIEWS: Record<GameId, string | null> = {
   "make-your-own-matter": "/game-1-ref.png",
-  "water-the-plant": null,
-  "wadi-crossing": null,
-  "mosque-systems": null,
+  "water-the-plant": "/game-2-ref.png",
+  "wadi-crossing": "/game-3-ref.png",
+  "mosque-systems": "/game-4-ref.png",
 };
+
+const COMING_SOON_GAMES = new Set<GameId>(["water-the-plant", "wadi-crossing", "mosque-systems"]);
 
 /**
  * Container where each game's Phaser scene will be mounted.
@@ -144,20 +145,28 @@ function PhaserGameContainer({ gameId }: { gameId: GameId }) {
     };
   }, [gameId]);
 
-  // Non-playable games fall back to preview image or coming-soon
-  if (gameId !== "make-your-own-matter") {
+  // Non-playable games fall back to preview image with a "coming soon" overlay
+  if (COMING_SOON_GAMES.has(gameId)) {
     const preview = GAME_PREVIEWS[gameId];
     return (
-      <div className="mt-4 min-h-[420px] w-full overflow-hidden rounded-2xl bg-card/70">
+      <div className="relative mt-4 min-h-[420px] w-full overflow-hidden rounded-2xl bg-card/70">
         {preview ? (
-          <img
-            src={preview}
-            alt="Game preview"
-            width={1280}
-            height={720}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
+          <>
+            <img
+              src={preview}
+              alt="Game preview"
+              width={1280}
+              height={720}
+              loading="lazy"
+              className="h-full w-full object-cover blur-[2px] scale-105"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+              <span className="rounded-full bg-white/15 px-5 py-2 text-sm font-extrabold uppercase tracking-widest text-white backdrop-blur-sm">
+                Coming Soon
+              </span>
+              <p className="mt-2 text-xs font-bold text-white/60">This game is currently in development</p>
+            </div>
+          </>
         ) : (
           <div className="flex min-h-[420px] items-center justify-center">
             <p className="text-sm font-bold text-navy/50">Game coming soon</p>

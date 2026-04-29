@@ -3,10 +3,10 @@ import dropletAndPlant from "./droplet-and-plant.png";
 import explorerRunning from "./explorer-running.png";
 import gasCloud from "./gas-cloud.png";
 import liquidDroplet from "./liquid-droplet.png";
-import magnifierBird from "./magnifier-bird.png";
+import falconOryx from "./falcon-oryx.png";
 import owlWithMosque from "./owl-with-mosque.png";
-import pandaScientist from "./panda-scientist.png";
-import pandaWithTray from "./panda-with-tray.png";
+import camelHero from "./camel-hero.png";
+import camelWithFlask from "./camel-with-flask.png";
 import solidCube from "./solid-cube.png";
 import topicComingFlag from "./topic-coming-flag.png";
 import topicComingSoon from "./topic-coming-soon.png";
@@ -20,10 +20,10 @@ export const CHARACTER_IMAGES: Record<string, string> = {
   "explorer-running": toSrc(explorerRunning),
   "gas-cloud": toSrc(gasCloud),
   "liquid-droplet": toSrc(liquidDroplet),
-  "magnifier-bird": toSrc(magnifierBird),
+  "falcon-oryx": toSrc(falconOryx),
   "owl-with-mosque": toSrc(owlWithMosque),
-  "panda-scientist": toSrc(pandaScientist),
-  "panda-with-tray": toSrc(pandaWithTray),
+  "camel-hero": toSrc(camelHero),
+  "camel-with-flask": toSrc(camelWithFlask),
   "solid-cube": toSrc(solidCube),
   "topic-coming-flag": toSrc(topicComingFlag),
   "topic-coming-soon": toSrc(topicComingSoon),
