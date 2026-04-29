@@ -74,6 +74,8 @@ export const STRINGS = {
     quizCompleteSub: (s: number) => `You earned ${s} star${s === 1 ? "" : "s"}.`,
     backToTopicBtn: "Back to topic",
     comingSoonBody: "This game is coming soon. Finish the first game to keep exploring!",
+    resetProgress: "Reset progress",
+    resetConfirm: "Reset all your stars and start over?",
   },
   ar: {
     brandTagline: "العلوم",
@@ -144,6 +146,8 @@ export const STRINGS = {
     quizCompleteSub: (s: number) => `لقد ربحت ${s} نجمة.`,
     backToTopicBtn: "العودة للموضوع",
     comingSoonBody: "هذه اللعبة قريباً. أكمل اللعبة الأولى لمتابعة الاستكشاف!",
+    resetProgress: "إعادة تعيين التقدم",
+    resetConfirm: "هل تريد إعادة تعيين كل نجومك والبدء من جديد؟",
   },
 } as const;
 

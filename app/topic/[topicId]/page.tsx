@@ -25,7 +25,8 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
 
   const { t } = useLang();
   const topic = TOPICS[topicId];
-  const { getGameStars, getTopicStars, getTopicMaxStars, getNextGame } = useProgress();
+  const { getGameStars, getTopicStars, getTopicMaxStars, getNextGame, resetProgress } =
+    useProgress();
   const earned = getTopicStars(topicId);
   const max = getTopicMaxStars(topicId);
   const nextId = getNextGame(topicId);
@@ -61,8 +62,18 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
               {t.statesOfMatterIntro2}
             </p>
           </div>
-          <div className="absolute end-2 top-2">
+          <div className="absolute end-2 top-2 flex flex-col items-end gap-2">
             <StarsCounter current={earned} total={max} />
+            {earned > 0 && (
+              <button
+                onClick={() => {
+                  if (window.confirm(t.resetConfirm)) resetProgress();
+                }}
+                className="text-xs font-bold text-navy/50 underline-offset-2 hover:text-navy/80 hover:underline"
+              >
+                {t.resetProgress}
+              </button>
+            )}
           </div>
         </div>
       </section>

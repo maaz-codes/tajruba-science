@@ -84,7 +84,20 @@ export function useProgress() {
     [state],
   );
 
-  return { setGameStars, getGameStars, getTopicStars, getTopicMaxStars, getNextGame };
+  const resetProgress = useCallback(() => {
+    const empty: ProgressState = { games: {} };
+    write(empty);
+    setState(empty);
+  }, []);
+
+  return {
+    setGameStars,
+    getGameStars,
+    getTopicStars,
+    getTopicMaxStars,
+    getNextGame,
+    resetProgress,
+  };
 }
 
 const SOUND_KEY = "tajruba.sound";
