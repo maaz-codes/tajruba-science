@@ -25,7 +25,7 @@ export const TOPICS: Record<TopicId, TopicDef> = {
       {
         id: "make-your-own-matter",
         number: 1,
-        characterSlot: "panda-with-tray",
+        characterSlot: "camel-with-flask",
         bgClass: "bg-pink-soft",
       },
       {
@@ -57,9 +57,9 @@ export const GAME_SUB_TOPICS: Record<GameId, [string, string, string]> = {
     "Everyday objects and substances can be grouped as solid, liquid, or gas.",
   ],
   "water-the-plant": [
-    "Water can exist as a solid, liquid, or gas.",
-    "Plants absorb water in its liquid state through their roots.",
-    "Heat and cold can change water from one state to another.",
+    "Heating liquid water turns it into water vapor, which rises upward.",
+    "Water changes state when temperature changes.",
+    "Cooling water vapor causes condensation and helps form clouds.",
   ],
   "wadi-crossing": [
     "Matter changes state when energy is added or removed.",

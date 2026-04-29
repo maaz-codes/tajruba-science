@@ -38,17 +38,17 @@ export default function Landing() {
         {/* Left mascot */}
         <div className="absolute left-0 top-6 hidden md:block">
           <CharacterSlot
-            id="panda-scientist"
+            id="camel-hero"
             blobClass="bg-transparent"
             className="h-80 w-80"
             float
-            label="Panda"
+            label="Camel"
           />
         </div>
         {/* Right mascot */}
         <div className="absolute right-0 top-10 hidden md:block">
           <CharacterSlot
-            id="magnifier-bird"
+            id="falcon-oryx"
             blobClass="bg-transparent"
             className="h-80 w-80"
             float
