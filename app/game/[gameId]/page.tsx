@@ -112,13 +112,7 @@ const GAME_PREVIEWS: Record<GameId, string | null> = {
   "mosque-systems": "/game-4-ref.png",
 };
 
-// Style of "coming soon" overlay for each non-playable game
-type OverlayStyle = "dark-gradient" | "frosted-glass" | "blurred-lock";
-const COMING_SOON_OVERLAY: Partial<Record<GameId, OverlayStyle>> = {
-  "water-the-plant": "dark-gradient",
-  "wadi-crossing":   "frosted-glass",
-  "mosque-systems":  "blurred-lock",
-};
+const COMING_SOON_GAMES = new Set<GameId>(["water-the-plant", "wadi-crossing", "mosque-systems"]);
 
 /**
  * Container where each game's Phaser scene will be mounted.
@@ -152,9 +146,8 @@ function PhaserGameContainer({ gameId }: { gameId: GameId }) {
   }, [gameId]);
 
   // Non-playable games fall back to preview image with a "coming soon" overlay
-  if (gameId !== "make-your-own-matter") {
+  if (COMING_SOON_GAMES.has(gameId)) {
     const preview = GAME_PREVIEWS[gameId];
-    const overlay = COMING_SOON_OVERLAY[gameId];
     return (
       <div className="relative mt-4 min-h-[420px] w-full overflow-hidden rounded-2xl bg-card/70">
         {preview ? (
@@ -165,50 +158,14 @@ function PhaserGameContainer({ gameId }: { gameId: GameId }) {
               width={1280}
               height={720}
               loading="lazy"
-              className={[
-                "h-full w-full object-cover",
-                overlay === "dark-gradient" ? "blur-[2px] scale-105" : "",
-                overlay === "frosted-glass" ? "blur-[2px] scale-105" : "",
-                overlay === "blurred-lock" ? "blur-[2px] scale-105" : "",
-              ].join(" ")}
+              className="h-full w-full object-cover blur-[2px] scale-105"
             />
-
-            {/* Dark gradient overlay (game 2) */}
-            {overlay === "dark-gradient" && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/70 via-black/20 to-transparent">
-                <span className="rounded-full bg-white/15 px-5 py-2 text-sm font-extrabold uppercase tracking-widest text-white backdrop-blur-sm">
-                  Coming Soon
-                </span>
-                <p className="mt-2 text-xs font-bold text-white/60">This game is currently in development</p>
-              </div>
-            )}
-
-            {/* Frosted glass overlay (game 3) */}
-            {overlay === "frosted-glass" && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center backdrop-blur-[2px] bg-white/20">
-                <div className="flex flex-col items-center gap-2 rounded-2xl bg-white/60 px-8 py-5 shadow-lg backdrop-blur-md">
-                  <span className="text-2xl font-extrabold text-navy">Coming Soon</span>
-                  <p className="text-sm font-bold text-navy/60">This game is currently in development</p>
-                </div>
-              </div>
-            )}
-
-            {/* Blurred + lock overlay (game 4) */}
-            {overlay === "blurred-lock" && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy/30">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                  </div>
-                  <span className="rounded-full bg-white/20 px-5 py-1.5 text-sm font-extrabold uppercase tracking-widest text-white backdrop-blur-sm">
-                    Coming Soon
-                  </span>
-                </div>
-              </div>
-            )}
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+              <span className="rounded-full bg-white/15 px-5 py-2 text-sm font-extrabold uppercase tracking-widest text-white backdrop-blur-sm">
+                Coming Soon
+              </span>
+              <p className="mt-2 text-xs font-bold text-white/60">This game is currently in development</p>
+            </div>
           </>
         ) : (
           <div className="flex min-h-[420px] items-center justify-center">
