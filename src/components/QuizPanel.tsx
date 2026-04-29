@@ -4,6 +4,7 @@ import { SpeechBubble } from "@/components/SpeechBubble";
 import { StarRow } from "@/components/StarRow";
 import { Lightbulb, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { starsForScore } from "@/lib/quizUtils";
 import { getQuiz } from "@/data/quizzes";
 import type { GameId } from "@/data/topics";
 import { useProgress } from "@/hooks/useProgress";
@@ -13,14 +14,6 @@ import confetti from "canvas-confetti";
 interface QuizPanelProps {
   gameId: GameId;
   bgColor?: string;
-}
-
-function starsForScore(score: number, total: number): number {
-  const ratio = score / total;
-  if (ratio >= 0.95) return 3;
-  if (ratio >= 0.6) return 2;
-  if (ratio >= 0.2) return 1;
-  return 0;
 }
 
 export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
