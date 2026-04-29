@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { useLang } from "@/i18n/LanguageProvider";
-import { CharacterSlot } from "@/components/CharacterSlot";
 import { SpeechBubble } from "@/components/SpeechBubble";
 import { StarRow } from "@/components/StarRow";
 import { Lightbulb, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { starsForScore } from "@/lib/quizUtils";
 import { getQuiz } from "@/data/quizzes";
 import type { GameId } from "@/data/topics";
 import { useProgress } from "@/hooks/useProgress";
@@ -14,14 +14,6 @@ import confetti from "canvas-confetti";
 interface QuizPanelProps {
   gameId: GameId;
   bgColor?: string;
-}
-
-function starsForScore(score: number, total: number): number {
-  const ratio = score / total;
-  if (ratio >= 0.95) return 3;
-  if (ratio >= 0.6) return 2;
-  if (ratio >= 0.2) return 1;
-  return 0;
 }
 
 export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
@@ -35,7 +27,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
   const [earned, setEarned] = useState<number>(0);
 
   // New Quiz Engine States
-  const [answerStates, setAnswerStates] = useState<('idle' | 'correct' | 'wrong')[]>(Array(10).fill('idle'));
+  const [answerStates, setAnswerStates] = useState<("idle" | "correct" | "wrong")[]>([]);
   const [tryAgainVisible, setTryAgainVisible] = useState(false);
   const [hintOpen, setHintOpen] = useState(true);
 
@@ -49,7 +41,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
 
   function handleAnswer(i: number) {
     // Prevent clicking if locked or already wrong
-    if (correctAnswerRef.current !== null || answerStates[i] === 'wrong') return;
+    if (correctAnswerRef.current !== null || answerStates[i] === "wrong") return;
 
     const isCorrect = i === q.correctIndex;
 
@@ -63,7 +55,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
       // Handle Wrong Answer
       setAnswerStates((prev) => {
         const next = [...prev];
-        next[i] = 'wrong';
+        next[i] = "wrong";
         return next;
       });
       setTryAgainVisible(true);
@@ -73,17 +65,16 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
       setTimeout(() => {
         setAnswerStates((prev) => {
           const next = [...prev];
-          // Keep it wrong to show it's disabled, the animate-shake class 
+          // Keep it wrong to show it's disabled, the animate-shake class
           // runs once when it becomes 'wrong'
           return next;
         });
       }, 500);
-
     } else {
       // Handle Correct Answer
       setAnswerStates((prev) => {
         const next = [...prev];
-        next[i] = 'correct';
+        next[i] = "correct";
         return next;
       });
       setTryAgainVisible(false);
@@ -99,7 +90,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
           particleCount: 60,
           spread: 70,
           origin: { x, y },
-          colors: ['#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B'],
+          colors: ["#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B"],
           disableForReducedMotion: true,
           zIndex: 1000,
         });
@@ -116,7 +107,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
         } else {
           // Advance to next question
           setIndex(index + 1);
-          setAnswerStates(Array(10).fill('idle'));
+          setAnswerStates([]);
           // hint visibility intentionally preserved across questions
           setTryAgainVisible(false);
           hasAnsweredCurrentRef.current = false;
@@ -128,7 +119,10 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
 
   if (collapsed) {
     return (
-      <aside className="rounded-3xl bg-lilac-soft p-3 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
+      <aside
+        className="rounded-3xl bg-lilac-soft p-3 shadow-card"
+        style={bgColor ? { backgroundColor: bgColor } : undefined}
+      >
         <button
           onClick={() => setCollapsed(false)}
           className="flex w-full items-center justify-between text-left text-lg font-extrabold text-navy"
@@ -146,7 +140,10 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
   if (done) {
     const previousBest = getGameStars(gameId);
     return (
-      <aside className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
+      <aside
+        className="flex h-full flex-col rounded-3xl bg-lilac-soft p-6 shadow-card"
+        style={bgColor ? { backgroundColor: bgColor } : undefined}
+      >
         <h2 className="text-3xl font-extrabold text-navy">{t.quizCompleteTitle}</h2>
         <p className="mt-2 text-base font-bold text-navy/70">{t.quizCompleteSub(earned)}</p>
         <div className="mt-6 flex items-center justify-center">
@@ -154,7 +151,7 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
         </div>
         <div className="mt-auto pt-6">
           <Link
-           href="/topic/states-of-matter"
+            href="/topic/states-of-matter"
             className="btn-pop block rounded-full bg-primary px-6 py-3 text-center font-extrabold text-primary-foreground"
           >
             {t.backToTopicBtn}
@@ -165,7 +162,10 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
   }
 
   return (
-    <aside className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card" style={bgColor ? { backgroundColor: bgColor } : undefined}>
+    <aside
+      className="relative flex h-full flex-col rounded-3xl bg-lilac-soft p-5 shadow-card"
+      style={bgColor ? { backgroundColor: bgColor } : undefined}
+    >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -180,7 +180,11 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
                   key={i}
                   className={cn(
                     "h-2 rounded-full transition-all duration-300",
-                    i < index ? "bg-primary w-2 opacity-60" : i === index ? "bg-primary w-5" : "bg-lilac/50 w-2 opacity-40"
+                    i < index
+                      ? "bg-primary w-2 opacity-60"
+                      : i === index
+                        ? "bg-primary w-5"
+                        : "bg-lilac/50 w-2 opacity-40",
                   )}
                 />
               ))}
@@ -197,36 +201,37 @@ export function QuizPanel({ gameId, bgColor }: QuizPanelProps) {
       </div>
 
       {/* Question */}
-      <h3 className="mt-5 text-xl font-extrabold leading-snug text-navy">
-        {q.question}
-      </h3>
+      <h3 className="mt-5 text-xl font-extrabold leading-snug text-navy">{q.question}</h3>
 
       {/* Options */}
       <ul className="mt-4 space-y-3">
         {q.options.map((opt, i) => {
-          const state = answerStates[i];
+          const state = answerStates[i] ?? "idle";
           const isLocked = correctAnswerRef.current !== null;
-          
+
           return (
             <li key={i}>
               <button
                 id={`quiz-opt-${i}`}
                 onClick={() => handleAnswer(i)}
-                disabled={isLocked || state === 'wrong'}
+                disabled={isLocked || state === "wrong"}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-start text-base font-bold transition-all",
-                  state === 'idle' && "bg-card text-navy hover:bg-card/80",
-                  state === 'correct' && "bg-success/20 ring-2 ring-success text-navy",
-                  state === 'wrong' && "bg-slate-200 text-slate-500 animate-shake ring-2 ring-slate-300",
-                  isLocked && state !== 'correct' && "opacity-50 pointer-events-none"
+                  state === "idle" && "bg-card text-navy hover:bg-card/80",
+                  state === "correct" && "bg-success/20 ring-2 ring-success text-navy",
+                  state === "wrong" &&
+                    "bg-slate-200 text-slate-500 animate-shake ring-2 ring-slate-300",
+                  isLocked && state !== "correct" && "opacity-50 pointer-events-none",
                 )}
               >
-                <span className={cn(
-                  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold",
-                  state === 'idle' && "bg-lilac-soft text-primary",
-                  state === 'correct' && "bg-success text-success-foreground",
-                  state === 'wrong' && "bg-slate-300 text-slate-500"
-                )}>
+                <span
+                  className={cn(
+                    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold",
+                    state === "idle" && "bg-lilac-soft text-primary",
+                    state === "correct" && "bg-success text-success-foreground",
+                    state === "wrong" && "bg-slate-300 text-slate-500",
+                  )}
+                >
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="leading-snug">{opt}</span>

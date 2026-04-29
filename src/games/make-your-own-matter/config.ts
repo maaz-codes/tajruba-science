@@ -38,37 +38,37 @@ export const KEYS = {
 // Asset file paths (all in /public/game1/)
 export const ASSET_PATH = "/game1/";
 export const IMAGE_ASSETS: Array<{ key: string; file: string }> = [
-  { key: KEYS.BG,            file: "bg.png" },
-  { key: KEYS.BADGE_GAS,     file: "badge-gas.png" },
-  { key: KEYS.BADGE_LIQUID,  file: "badge-liquid.png" },
-  { key: KEYS.BADGE_SOLID,   file: "badge-solid.png" },
-  { key: KEYS.SLIDER_EARTH,   file: "slider-earth.png" },
-  { key: KEYS.SLIDER_TREE,    file: "slider-tree.png" },
-  { key: KEYS.SLIDER_INDUSTRY,file: "slider-industry.png" },
-  { key: KEYS.STATE_GAS,     file: "state-gas.png" },
-  { key: KEYS.STATE_LIQUID,  file: "state-liquid.png" },
-  { key: KEYS.STATE_SOLID,   file: "state-solid.png" },
-  { key: KEYS.OUT_STONE,     file: "out-stone.png" },
-  { key: KEYS.OUT_OCEAN,     file: "out-ocean.png" },
-  { key: KEYS.OUT_CLOUD,     file: "out-cloud.png" },
-  { key: KEYS.OUT_WOOD,      file: "out-wood.png" },
-  { key: KEYS.OUT_SAP,       file: "out-sap.png" },
-  { key: KEYS.OUT_OXYGEN,    file: "out-oxygen.png" },
-  { key: KEYS.OUT_IRON,      file: "out-iron.png" },
+  { key: KEYS.BG, file: "bg.png" },
+  { key: KEYS.BADGE_GAS, file: "badge-gas.png" },
+  { key: KEYS.BADGE_LIQUID, file: "badge-liquid.png" },
+  { key: KEYS.BADGE_SOLID, file: "badge-solid.png" },
+  { key: KEYS.SLIDER_EARTH, file: "slider-earth.png" },
+  { key: KEYS.SLIDER_TREE, file: "slider-tree.png" },
+  { key: KEYS.SLIDER_INDUSTRY, file: "slider-industry.png" },
+  { key: KEYS.STATE_GAS, file: "state-gas.png" },
+  { key: KEYS.STATE_LIQUID, file: "state-liquid.png" },
+  { key: KEYS.STATE_SOLID, file: "state-solid.png" },
+  { key: KEYS.OUT_STONE, file: "out-stone.png" },
+  { key: KEYS.OUT_OCEAN, file: "out-ocean.png" },
+  { key: KEYS.OUT_CLOUD, file: "out-cloud.png" },
+  { key: KEYS.OUT_WOOD, file: "out-wood.png" },
+  { key: KEYS.OUT_SAP, file: "out-sap.png" },
+  { key: KEYS.OUT_OXYGEN, file: "out-oxygen.png" },
+  { key: KEYS.OUT_IRON, file: "out-iron.png" },
   { key: KEYS.OUT_CHEMICALS, file: "out-chemicals.png" },
-  { key: KEYS.OUT_SMOKE,     file: "out-smoke.png" },
+  { key: KEYS.OUT_SMOKE, file: "out-smoke.png" },
 ];
 
 // Panel sizing — row is centered on canvas midpoint (640).
 // Total row width = 965px: cube(220)+25+char(220)+30+op(30)+30+slider(100)+30+op(30)+30+output(220)
-export const CUBE       = { x: 268,  y: 360, w: 220, h: 220 };
-export const CHARACTER  = { x: 513,  y: 360, w: 220, h: 220 };
-export const SLIDER     = { x: 763,  y: 360, w: 100, h: 220 };
-export const OUTPUT     = { x: 1013, y: 360, w: 220, h: 220 };
-export const TRAY       = { x: 635,  y: 635, w: 800, h: 70 };
+export const CUBE = { x: 268, y: 360, w: 220, h: 220 };
+export const CHARACTER = { x: 513, y: 360, w: 220, h: 220 };
+export const SLIDER = { x: 763, y: 360, w: 100, h: 220 };
+export const OUTPUT = { x: 1013, y: 360, w: 220, h: 220 };
+export const TRAY = { x: 635, y: 635, w: 800, h: 70 };
 // Operator x positions (between panels)
-export const OP_PLUS  = 668;  // between CHARACTER and SLIDER
-export const OP_EQUAL = 858;  // between SLIDER and OUTPUT
+export const OP_PLUS = 668; // between CHARACTER and SLIDER
+export const OP_EQUAL = 858; // between SLIDER and OUTPUT
 
 // Particle visuals
 export const PARTICLE_RADIUS = 20;
@@ -80,9 +80,9 @@ export const FONT = "Nunito, Arial, sans-serif";
 
 // Brand colours (hex equivalents of site oklch tokens)
 export const COLOR = {
-  NAVY:    "#1e2d5f",   // oklch(0.24 0.09 285)
-  PRIMARY: "#4f46e5",   // oklch(0.52 0.22 285)  — primary buttons, accents
+  NAVY: "#1e2d5f", // oklch(0.24 0.09 285)
+  PRIMARY: "#4f46e5", // oklch(0.52 0.22 285)  — primary buttons, accents
   PRIMARY_DEEP: "#312e81", // oklch(0.32 0.15 285)
-  WHITE:   "#ffffff",
+  WHITE: "#ffffff",
   TEXT_MUTED: "#6366f1",
 } as const;

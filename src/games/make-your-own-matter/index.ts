@@ -33,7 +33,7 @@ export async function mount(
     callbacks: {
       postBoot: (game) => {
         if (!onProgress) return;
-        const scene = game.scene.getScene("BootScene") as any;
+        const scene = game.scene.getScene("BootScene") as { load?: Phaser.Loader.LoaderPlugin };
         if (!scene?.load) return;
         scene.load.on("progress", (value: number) => onProgress(Math.round(value * 100)));
         scene.load.on("complete", () => onProgress(100));

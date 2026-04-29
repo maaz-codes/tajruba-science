@@ -20,9 +20,7 @@ export function StarRow({ filled, total = 3, size = 20, className, outlineOnly }
             key={i}
             size={size}
             strokeWidth={2}
-            className={cn(
-              isFilled ? "fill-sun text-sun" : "fill-transparent text-lilac/60",
-            )}
+            className={cn(isFilled ? "fill-sun text-sun" : "fill-transparent text-lilac/60")}
           />
         );
       })}

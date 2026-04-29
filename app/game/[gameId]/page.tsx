@@ -80,18 +80,26 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
 
       {/* Sub-topics covered */}
       <div className="mx-auto mt-4 max-w-[1400px]">
-        <p className="mb-3 text-sm font-extrabold uppercase tracking-widest text-navy/50">Sub-topics covered</p>
+        <p className="mb-3 text-sm font-extrabold uppercase tracking-widest text-navy/50">
+          Sub-topics covered
+        </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {([<Atom size={20} />, <Layers size={20} />, <Package size={20} />] as const).map((icon, i) => ({
-              icon, text: GAME_SUB_TOPICS[gameId][i],
-            })).map(({ icon, text }, i) => (
-            <div key={i} className="flex items-center gap-3 rounded-2xl border border-lilac/40 bg-card px-4 py-3 shadow-sm">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                {icon}
-              </span>
-              <p className="text-sm font-bold leading-snug text-navy/80">{text}</p>
-            </div>
-          ))}
+          {([<Atom size={20} />, <Layers size={20} />, <Package size={20} />] as const)
+            .map((icon, i) => ({
+              icon,
+              text: GAME_SUB_TOPICS[gameId][i],
+            }))
+            .map(({ icon, text }, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-2xl border border-lilac/40 bg-card px-4 py-3 shadow-sm"
+              >
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  {icon}
+                </span>
+                <p className="text-sm font-bold leading-snug text-navy/80">{text}</p>
+              </div>
+            ))}
         </div>
       </div>
     </main>
@@ -99,10 +107,10 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
 }
 
 const QUIZ_BG: Record<GameId, string | undefined> = {
-  "make-your-own-matter": undefined,  // keeps default lilac-soft
-  "water-the-plant":  "#CEECDF",
-  "wadi-crossing":    "#FEE6BE",
-  "mosque-systems":   "#53D4C1",
+  "make-your-own-matter": undefined, // keeps default lilac-soft
+  "water-the-plant": "#CEECDF",
+  "wadi-crossing": "#FEE6BE",
+  "mosque-systems": "#53D4C1",
 };
 
 const GAME_PREVIEWS: Record<GameId, string | null> = {
@@ -121,7 +129,7 @@ const COMING_SOON_GAMES = new Set<GameId>(["water-the-plant", "wadi-crossing", "
  */
 function PhaserGameContainer({ gameId }: { gameId: GameId }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);   // 0–100
+  const [progress, setProgress] = useState(0); // 0–100
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -164,7 +172,9 @@ function PhaserGameContainer({ gameId }: { gameId: GameId }) {
               <span className="rounded-full bg-white/15 px-5 py-2 text-sm font-extrabold uppercase tracking-widest text-white backdrop-blur-sm">
                 Coming Soon
               </span>
-              <p className="mt-2 text-xs font-bold text-white/60">This game is currently in development</p>
+              <p className="mt-2 text-xs font-bold text-white/60">
+                This game is currently in development
+              </p>
             </div>
           </>
         ) : (
@@ -196,11 +206,7 @@ function PhaserGameContainer({ gameId }: { gameId: GameId }) {
           </div>
         </div>
       )}
-      <div
-        ref={containerRef}
-        id={`phaser-game-${gameId}`}
-        className="w-full h-full"
-      />
+      <div ref={containerRef} id={`phaser-game-${gameId}`} className="w-full h-full" />
     </div>
   );
 }

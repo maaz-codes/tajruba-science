@@ -52,7 +52,12 @@ const EN: QuizSet = {
     },
     {
       question: "Why does the vapor move upward?",
-      options: ["Because it is colder", "Because vapor rises", "Because plants pull it", "Because clouds push it"],
+      options: [
+        "Because it is colder",
+        "Because vapor rises",
+        "Because plants pull it",
+        "Because clouds push it",
+      ],
       correctIndex: 1,
       hint: "Heat the droplet and see where it goes.",
     },
@@ -96,13 +101,23 @@ const EN: QuizSet = {
     },
     {
       question: "What does a liquid do best?",
-      options: ["Keeps a fixed shape", "Flows and fits spaces", "Floats upward", "Spreads everywhere"],
+      options: [
+        "Keeps a fixed shape",
+        "Flows and fits spaces",
+        "Floats upward",
+        "Spreads everywhere",
+      ],
       correctIndex: 1,
       hint: "Watch how water moves.",
     },
     {
       question: "What is the main science idea in this game?",
-      options: ["Plants make food", "Rocks are heavy", "Matter can change state and behave differently", "The Sun is a star"],
+      options: [
+        "Plants make food",
+        "Rocks are heavy",
+        "Matter can change state and behave differently",
+        "The Sun is a star",
+      ],
       correctIndex: 2,
       hint: "Switch states to cross.",
     },
@@ -116,13 +131,23 @@ const EN: QuizSet = {
     },
     {
       question: "Why does the gas mosque fail the wind test?",
-      options: ["Gas is too cold", "Gas spreads and moves easily", "Gas becomes heavier", "Gas turns solid"],
+      options: [
+        "Gas is too cold",
+        "Gas spreads and moves easily",
+        "Gas becomes heavier",
+        "Gas turns solid",
+      ],
       correctIndex: 1,
       hint: "Watch what wind does to gas blocks.",
     },
     {
       question: "Why does the liquid mosque fail the earthquake test?",
-      options: ["Liquid glows", "Liquid freezes", "Liquid flows and loses shape", "Liquid becomes gas"],
+      options: [
+        "Liquid glows",
+        "Liquid freezes",
+        "Liquid flows and loses shape",
+        "Liquid becomes gas",
+      ],
       correctIndex: 2,
       hint: "Shake the liquid build and observe it.",
     },
@@ -233,7 +258,12 @@ const AR: QuizSet = {
     },
     {
       question: "ما الفكرة العلمية الرئيسية في هذه اللعبة؟",
-      options: ["النباتات تصنع الغذاء", "الصخور ثقيلة", "يمكن للمادة أن تغيّر حالتها وتتصرف بشكل مختلف", "الشمس نجم"],
+      options: [
+        "النباتات تصنع الغذاء",
+        "الصخور ثقيلة",
+        "يمكن للمادة أن تغيّر حالتها وتتصرف بشكل مختلف",
+        "الشمس نجم",
+      ],
       correctIndex: 2,
       hint: "بدّل الحالات لتعبر.",
     },
@@ -247,7 +277,12 @@ const AR: QuizSet = {
     },
     {
       question: "لماذا يفشل المسجد الغازي في اختبار الرياح؟",
-      options: ["الغاز بارد جداً", "الغاز ينتشر ويتحرك بسهولة", "الغاز يصبح أثقل", "الغاز يتحول إلى صلب"],
+      options: [
+        "الغاز بارد جداً",
+        "الغاز ينتشر ويتحرك بسهولة",
+        "الغاز يصبح أثقل",
+        "الغاز يتحول إلى صلب",
+      ],
       correctIndex: 1,
       hint: "راقب ما تفعله الريح بالكتل الغازية.",
     },

@@ -111,10 +111,18 @@ export function playSynth(type: SfxType, muted: boolean) {
   if (muted) return;
   try {
     switch (type) {
-      case "start":  playStartClick();     break;
-      case "pop":    playParticlePop();    break;
-      case "tick":   playSliderTick();     break;
-      case "chime":  playDiscoveryChime(); break;
+      case "start":
+        playStartClick();
+        break;
+      case "pop":
+        playParticlePop();
+        break;
+      case "tick":
+        playSliderTick();
+        break;
+      case "chime":
+        playDiscoveryChime();
+        break;
     }
   } catch {
     // AudioContext unavailable or blocked — fail silently
