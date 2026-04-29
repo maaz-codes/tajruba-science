@@ -59,10 +59,7 @@ export function useProgress() {
     setState(next);
   }, []);
 
-  const getGameStars = useCallback(
-    (gameId: GameId) => state.games[gameId]?.stars ?? 0,
-    [state],
-  );
+  const getGameStars = useCallback((gameId: GameId) => state.games[gameId]?.stars ?? 0, [state]);
 
   const getTopicStars = useCallback(
     (topicId: TopicId) => {

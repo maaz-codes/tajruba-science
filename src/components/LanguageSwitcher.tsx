@@ -22,7 +22,13 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
           {!compact && <span>{lang === "en" ? "English" : "العربية"}</span>}
           {compact && <span>{lang === "en" ? "EN" : "AR"}</span>}
           <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden>
-            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M1 1l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       </DropdownMenuTrigger>

@@ -102,35 +102,31 @@ export default function Landing() {
           </div>
           <div className="px-5 py-4">
             <h3 className="text-xl font-extrabold text-navy">{t.statesOfMatterTitle}</h3>
-            <StarRow filled={Math.min(3, Math.round((statesStars / statesMax) * 3))} className="mt-2" />
+            <StarRow
+              filled={Math.min(3, Math.round((statesStars / statesMax) * 3))}
+              className="mt-2"
+            />
           </div>
         </Link>
 
         {/* Coming soon #1 */}
-        <ComingSoonCard
-          id="topic-coming-soon"
-          blob="bg-pink-soft"
-          icon="🚧"
-          label={t.comingSoon}
-        />
+        <ComingSoonCard id="topic-coming-soon" icon="🚧" label={t.comingSoon} />
         {/* Coming soon #2 */}
-        <ComingSoonCard
-          id="topic-coming-flag"
-          blob="bg-mint-soft"
-          icon="🚩"
-          label={t.comingSoon}
-        />
+        <ComingSoonCard id="topic-coming-flag" icon="🚩" label={t.comingSoon} />
       </section>
-
     </main>
   );
 }
 
-function ComingSoonCard({ id, blob, icon, label }: { id: string; blob: string; icon: string; label: string }) {
+function ComingSoonCard({ id, icon, label }: { id: string; icon: string; label: string }) {
   return (
     <div className="block overflow-hidden rounded-3xl bg-card/60 opacity-80 shadow-card">
       <div className="relative flex h-44 items-center justify-center bg-white p-4">
-        <CharacterSlot id={id} blobClass="bg-transparent" className="absolute inset-0 m-4 !rounded-xl overflow-hidden">
+        <CharacterSlot
+          id={id}
+          blobClass="bg-transparent"
+          className="absolute inset-0 m-4 !rounded-xl overflow-hidden"
+        >
           <span className="text-6xl">{icon}</span>
         </CharacterSlot>
       </div>

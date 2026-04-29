@@ -12,7 +12,8 @@ import topicComingFlag from "./topic-coming-flag.png";
 import topicComingSoon from "./topic-coming-soon.png";
 import topicStatesCover from "./topic-states-cover.png";
 
-const toSrc = (img: any) => (typeof img === "string" ? img : img?.src || "");
+const toSrc = (img: unknown) =>
+  typeof img === "string" ? img : (img as { src?: string })?.src || "";
 
 export const CHARACTER_IMAGES: Record<string, string> = {
   "cat-explorer": toSrc(catExplorer),

@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 export default function TopicPage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId: rawTopicId } = use(params);
   const topicId = rawTopicId as TopicId;
-  
+
   if (!(topicId in TOPICS)) {
     notFound();
   }
@@ -76,7 +76,12 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
           <SpeechBubble variant="yellow" tail="right" className="mb-6 max-w-[180px]">
             {t.letsExploreMatter}
           </SpeechBubble>
-          <CharacterSlot id="cat-explorer" blobClass="bg-transparent" className="h-40 w-40 [&_img]:scale-[2]" float>
+          <CharacterSlot
+            id="cat-explorer"
+            blobClass="bg-transparent"
+            className="h-40 w-40 [&_img]:scale-[2]"
+            float
+          >
             <span className="text-5xl">🐱</span>
           </CharacterSlot>
         </div>
@@ -84,7 +89,10 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
 
       {/* Game cards row with dashed connector */}
       <section className="relative mx-auto mt-8 max-w-7xl px-2">
-        <div className="dashed-connector pointer-events-none absolute left-0 right-0 top-[160px] hidden h-1 md:block" aria-hidden />
+        <div
+          className="dashed-connector pointer-events-none absolute left-0 right-0 top-[160px] hidden h-1 md:block"
+          aria-hidden
+        />
         <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {topic.games.map((g) => {
             const meta = gameMeta(g.id);
@@ -111,8 +119,17 @@ export default function TopicPage({ params }: { params: Promise<{ topicId: strin
                   </span>
                 )}
 
-                <div className={cn("flex h-36 items-center justify-center rounded-2xl overflow-hidden", g.bgClass)}>
-                  <CharacterSlot id={g.characterSlot} blobClass="bg-transparent" className="h-full w-full !rounded-2xl">
+                <div
+                  className={cn(
+                    "flex h-36 items-center justify-center rounded-2xl overflow-hidden",
+                    g.bgClass,
+                  )}
+                >
+                  <CharacterSlot
+                    id={g.characterSlot}
+                    blobClass="bg-transparent"
+                    className="h-full w-full !rounded-2xl"
+                  >
                     <span className="text-6xl">{cardEmoji(g.id)}</span>
                   </CharacterSlot>
                 </div>

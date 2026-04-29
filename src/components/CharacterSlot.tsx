@@ -77,13 +77,17 @@ export function CharacterSlot({
               imgLoaded ? "opacity-100" : "opacity-0",
             )}
           />
-        ) : children ?? (
-          <>
-            <span className="text-2xl">✨</span>
-            {label && <span className="mt-1 px-2 text-[10px] font-bold uppercase tracking-wide">
-              {label}
-            </span>}
-          </>
+        ) : (
+          (children ?? (
+            <>
+              <span className="text-2xl">✨</span>
+              {label && (
+                <span className="mt-1 px-2 text-[10px] font-bold uppercase tracking-wide">
+                  {label}
+                </span>
+              )}
+            </>
+          ))
         )}
       </div>
     </div>

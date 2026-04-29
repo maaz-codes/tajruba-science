@@ -16,14 +16,16 @@ export function SpeechBubble({
   variant = "yellow",
 }: SpeechBubbleProps) {
   const bg =
-    variant === "yellow"
-      ? "bg-sun-soft"
-      : variant === "lilac"
-        ? "bg-lilac-soft"
-        : "bg-card";
+    variant === "yellow" ? "bg-sun-soft" : variant === "lilac" ? "bg-lilac-soft" : "bg-card";
 
   return (
-    <div className={cn("relative inline-block rounded-2xl px-4 py-3 text-sm font-bold text-navy shadow-card", bg, className)}>
+    <div
+      className={cn(
+        "relative inline-block rounded-2xl px-4 py-3 text-sm font-bold text-navy shadow-card",
+        bg,
+        className,
+      )}
+    >
       {children}
       {tail !== "none" && (
         <span

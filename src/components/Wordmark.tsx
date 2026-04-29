@@ -8,7 +8,7 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center justify-center", className)}>
       <img
-        src={(logoUrl as any).src ?? String(logoUrl)}
+        src={(logoUrl as { src?: string }).src ?? String(logoUrl)}
         alt="Tajruba Science"
         width={288}
         height={144}
